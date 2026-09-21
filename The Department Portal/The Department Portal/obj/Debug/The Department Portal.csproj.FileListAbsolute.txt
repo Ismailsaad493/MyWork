@@ -1,0 +1,7 @@
+C:\Ultimate tach\The Department Portal\The Department Portal\obj\Debug\The Department Portal.csproj.AssemblyReference.cache
+C:\Ultimate tach\The Department Portal\The Department Portal\obj\Debug\The Department Portal.csproj.CoreCompileInputs.cache
+C:\Ultimate tach\The Department Portal\The Department Portal\bin\Debug\The Department Portal.exe.config
+C:\Ultimate tach\The Department Portal\The Department Portal\bin\Debug\The Department Portal.exe
+C:\Ultimate tach\The Department Portal\The Department Portal\bin\Debug\The Department Portal.pdb
+C:\Ultimate tach\The Department Portal\The Department Portal\obj\Debug\The Department Portal.exe
+C:\Ultimate tach\The Department Portal\The Department Portal\obj\Debug\The Department Portal.pdb

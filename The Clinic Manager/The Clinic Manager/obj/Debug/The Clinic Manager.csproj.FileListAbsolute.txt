@@ -1,0 +1,7 @@
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\bin\Debug\The Clinic Manager.exe.config
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\bin\Debug\The Clinic Manager.exe
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\bin\Debug\The Clinic Manager.pdb
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\obj\Debug\The Clinic Manager.csproj.AssemblyReference.cache
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\obj\Debug\The Clinic Manager.csproj.CoreCompileInputs.cache
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\obj\Debug\The Clinic Manager.exe
+C:\Ultimate tach\The Clinic Manager\The Clinic Manager\obj\Debug\The Clinic Manager.pdb

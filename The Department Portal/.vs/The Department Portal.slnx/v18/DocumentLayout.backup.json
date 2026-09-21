@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Ultimate tach\\The Department Portal\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{01D5BA46-810A-43B3-9F27-A43FB3BF9F5F}|The Department Portal\\The Department Portal.csproj|c:\\ultimate tach\\the department portal\\the department portal\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{01D5BA46-810A-43B3-9F27-A43FB3BF9F5F}|The Department Portal\\The Department Portal.csproj|solutionrelative:the department portal\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Ultimate tach\\The Department Portal\\The Department Portal\\Program.cs",
+              "RelativeDocumentMoniker": "The Department Portal\\Program.cs",
+              "ToolTip": "C:\\Ultimate tach\\The Department Portal\\The Department Portal\\Program.cs*",
+              "RelativeToolTip": "The Department Portal\\Program.cs*",
+              "ViewState": "AgIAABMAAAAAAAAAAAAQwDMAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T06:31:07.395Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

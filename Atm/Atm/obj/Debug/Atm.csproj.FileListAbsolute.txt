@@ -1,0 +1,7 @@
+C:\Ultimate tach\Atm\Atm\obj\Debug\Atm.csproj.AssemblyReference.cache
+C:\Ultimate tach\Atm\Atm\obj\Debug\Atm.csproj.CoreCompileInputs.cache
+C:\Ultimate tach\Atm\Atm\bin\Debug\Atm.exe.config
+C:\Ultimate tach\Atm\Atm\bin\Debug\Atm.exe
+C:\Ultimate tach\Atm\Atm\bin\Debug\Atm.pdb
+C:\Ultimate tach\Atm\Atm\obj\Debug\Atm.exe
+C:\Ultimate tach\Atm\Atm\obj\Debug\Atm.pdb

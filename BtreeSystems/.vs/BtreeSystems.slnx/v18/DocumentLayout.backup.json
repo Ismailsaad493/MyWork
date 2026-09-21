@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Ultimate tach\\BtreeSystems\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B9D6410C-7D33-46BC-9C19-DFC55EDB9D66}|ConsoleAppTest\\ConsoleAppTest.csproj|c:\\ultimate tach\\btreesystems\\consoleapptest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B9D6410C-7D33-46BC-9C19-DFC55EDB9D66}|ConsoleAppTest\\ConsoleAppTest.csproj|solutionrelative:consoleapptest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Ultimate tach\\BtreeSystems\\ConsoleAppTest\\Program.cs",
+              "RelativeDocumentMoniker": "ConsoleAppTest\\Program.cs",
+              "ToolTip": "C:\\Ultimate tach\\BtreeSystems\\ConsoleAppTest\\Program.cs",
+              "RelativeToolTip": "ConsoleAppTest\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-09T12:01:08.96Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

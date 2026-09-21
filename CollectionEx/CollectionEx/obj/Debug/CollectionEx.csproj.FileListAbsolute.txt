@@ -1,0 +1,7 @@
+C:\Ultimate tach\CollectionEx\CollectionEx\bin\Debug\CollectionEx.exe.config
+C:\Ultimate tach\CollectionEx\CollectionEx\bin\Debug\CollectionEx.exe
+C:\Ultimate tach\CollectionEx\CollectionEx\bin\Debug\CollectionEx.pdb
+C:\Ultimate tach\CollectionEx\CollectionEx\obj\Debug\CollectionEx.csproj.AssemblyReference.cache
+C:\Ultimate tach\CollectionEx\CollectionEx\obj\Debug\CollectionEx.csproj.CoreCompileInputs.cache
+C:\Ultimate tach\CollectionEx\CollectionEx\obj\Debug\CollectionEx.exe
+C:\Ultimate tach\CollectionEx\CollectionEx\obj\Debug\CollectionEx.pdb

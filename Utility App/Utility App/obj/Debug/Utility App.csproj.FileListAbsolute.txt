@@ -1,0 +1,7 @@
+C:\Ultimate tach\Utility App\Utility App\bin\Debug\Utility App.exe.config
+C:\Ultimate tach\Utility App\Utility App\bin\Debug\Utility App.exe
+C:\Ultimate tach\Utility App\Utility App\bin\Debug\Utility App.pdb
+C:\Ultimate tach\Utility App\Utility App\obj\Debug\Utility App.csproj.AssemblyReference.cache
+C:\Ultimate tach\Utility App\Utility App\obj\Debug\Utility App.csproj.CoreCompileInputs.cache
+C:\Ultimate tach\Utility App\Utility App\obj\Debug\Utility App.exe
+C:\Ultimate tach\Utility App\Utility App\obj\Debug\Utility App.pdb

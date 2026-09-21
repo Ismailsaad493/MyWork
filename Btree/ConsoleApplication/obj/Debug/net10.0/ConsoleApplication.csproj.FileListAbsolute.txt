@@ -1,0 +1,15 @@
+C:\Ultimate tach\Btree\ConsoleApplication\bin\Debug\net10.0\ConsoleApplication.exe
+C:\Ultimate tach\Btree\ConsoleApplication\bin\Debug\net10.0\ConsoleApplication.deps.json
+C:\Ultimate tach\Btree\ConsoleApplication\bin\Debug\net10.0\ConsoleApplication.runtimeconfig.json
+C:\Ultimate tach\Btree\ConsoleApplication\bin\Debug\net10.0\ConsoleApplication.dll
+C:\Ultimate tach\Btree\ConsoleApplication\bin\Debug\net10.0\ConsoleApplication.pdb
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.AssemblyInfoInputs.cache
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.AssemblyInfo.cs
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.csproj.CoreCompileInputs.cache
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.dll
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\refint\ConsoleApplication.dll
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.pdb
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleApplication.genruntimeconfig.cache
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ref\ConsoleApplication.dll
+C:\Ultimate tach\Btree\ConsoleApplication\obj\Debug\net10.0\ConsoleA.44DD3A81.Up2Date
