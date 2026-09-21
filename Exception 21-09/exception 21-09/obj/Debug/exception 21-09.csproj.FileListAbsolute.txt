@@ -1,0 +1,7 @@
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\obj\Debug\exception 21-09.csproj.AssemblyReference.cache
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\obj\Debug\exception 21-09.csproj.CoreCompileInputs.cache
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\bin\Debug\exception 21-09.exe.config
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\bin\Debug\exception 21-09.exe
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\bin\Debug\exception 21-09.pdb
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\obj\Debug\exception 21-09.exe
+C:\Users\Ismail Saad\Documents\My Work\Exception\exception 21-09\obj\Debug\exception 21-09.pdb
