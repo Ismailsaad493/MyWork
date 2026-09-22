@@ -1,0 +1,7 @@
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\bin\Debug\ex 22-09.exe.config
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\bin\Debug\ex 22-09.exe
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\bin\Debug\ex 22-09.pdb
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\obj\Debug\ex 22-09.csproj.AssemblyReference.cache
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\obj\Debug\ex 22-09.csproj.CoreCompileInputs.cache
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\obj\Debug\ex 22-09.exe
+C:\Users\Ismail Saad\Documents\My Work\ex 22-09\ex 22-09\obj\Debug\ex 22-09.pdb

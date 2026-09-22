@@ -1,0 +1,7 @@
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\obj\Debug\The Warehouse Shipper.csproj.AssemblyReference.cache
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\obj\Debug\The Warehouse Shipper.csproj.CoreCompileInputs.cache
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\bin\Debug\The Warehouse Shipper.exe.config
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\bin\Debug\The Warehouse Shipper.exe
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\bin\Debug\The Warehouse Shipper.pdb
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\obj\Debug\The Warehouse Shipper.exe
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\The Warehouse Shipper\The Warehouse Shipper\obj\Debug\The Warehouse Shipper.pdb

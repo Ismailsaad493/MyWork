@@ -1,0 +1,7 @@
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\obj\Debug\Tasks.csproj.AssemblyReference.cache
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\obj\Debug\Tasks.csproj.CoreCompileInputs.cache
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\bin\Debug\Tasks.exe.config
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\bin\Debug\Tasks.exe
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\bin\Debug\Tasks.pdb
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\obj\Debug\Tasks.exe
+C:\Users\Ismail Saad\Documents\My Work\Ex 22-09\Tasks\Tasks\obj\Debug\Tasks.pdb
