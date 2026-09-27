@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SmartGadgetStore
+﻿public class Phone : Gadget
 {
-    internal class Phone
+    public Phone(string brand, double price) : base(brand, price)
     {
+    }
+
+    public override void TurnOn()
+    {
+        Console.WriteLine("Swiping up to unlock the phone screen...");
     }
 }

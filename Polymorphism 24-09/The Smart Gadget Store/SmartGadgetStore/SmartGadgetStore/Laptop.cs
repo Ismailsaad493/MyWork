@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SmartGadgetStore
+﻿public class Laptop : Gadget
 {
-    internal class Laptop
+    public Laptop(string brand, double price) : base(brand, price)
     {
+    }
+
+    public override void TurnOn()
+    {
+        Console.WriteLine("Booting up the desktop operating system...");
     }
 }
