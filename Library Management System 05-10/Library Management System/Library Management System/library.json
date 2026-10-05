@@ -1,0 +1,22 @@
+{
+  "Books": [
+    {
+      "Id": 1,
+      "Title": "C# Programming",
+      "Author": "John Smith",
+      "IsAvailable": true
+    },
+    {
+      "Id": 2,
+      "Title": "Clean Code",
+      "Author": "Robert Martin",
+      "IsAvailable": false
+    },
+    {
+      "Id": 3,
+      "Title": "The Pragmatic Programmer",
+      "Author": "Andrew Hunt",
+      "IsAvailable": true
+    }
+  ]
+}
