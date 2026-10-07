@@ -1,35 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
 namespace Library_Management_System
 {
     public class Library
     {
         public List<Book> Books { get; set; } = new List<Book>();
-        private readonly string _filePath = "Library_data.json";
 
-        public void SaveState()
-        {
+        private readonly string _connectionString = "Server=localhost;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
-            string json = JsonSerializer.Serialize(Books, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_filePath, json);
-        }
-        public void LoadState()
+        public void FetchBookFromDatabase()
         {
-            if (File.Exists(_filePath))
+            Books.Clear();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string json = File.ReadAllText(_filePath);
-                Books = JsonSerializer.Deserialize<List<Book>>(json) ?? new List<Book>();
+                string query = "SELECT Id, Title, Author, IsAvailable FROM Books";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Books.Add(new Book
+                            {
+                                Id = reader.GetInt32(0),
+                                Title = reader.GetString(1),
+                                Author = reader.GetString(2),
+                                IsAvailable = reader.GetBoolean(3)
+                            });
+                        }
+                    }
+                }
             }
         }
+
+        public void UpdateBookInDatabase(Book book)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                int isAvailableBit = book.IsAvailable ? 1 : 0;
+                string query = $"UPDATE Books SET IsAvailable = {isAvailableBit} WHERE Id = {book.Id}";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    command.ExecuteNonQuery(); 
+                }
+            }
+        }
+
         public List<Book> SearchByAuthor(string author)
         {
             return Books.Where(b => b.Author.ToLower().Contains(author.ToLower())).ToList();
         }
+
         public event Action<Book> OnBookOverdue;
 
         public async Task CheckoutBookAsync(int bookId, Member member)
@@ -39,9 +69,10 @@ namespace Library_Management_System
             if (book != null && book.IsAvailable)
             {
                 book.Borrow(member);
-                SaveState();
+                UpdateBookInDatabase(book);
             }
         }
+
         public async Task CheckForOverdueBooksAsync()
         {
             await Task.Delay(4000);
@@ -55,8 +86,5 @@ namespace Library_Management_System
                 }
             }
         }
-
-
-
     }
 }
