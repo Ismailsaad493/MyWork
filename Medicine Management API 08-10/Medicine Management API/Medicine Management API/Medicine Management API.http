@@ -1,0 +1,9 @@
+@MedicineAPI_HostAddress = https://localhost:7219
+
+POST {{MedicineAPI_HostAddress}}/api/medicines
+Content-Type: application/json
+
+{
+  "name": "Paracetamol",
+  "manufacturer": "PharmaCorp"
+}
