@@ -26,8 +26,8 @@ namespace EmployeeAdminPortal.Controllers
         }
 
         [HttpGet]
-        [Route("{id:guid}")]
-        public IActionResult GetEmployeesId(Guid id)
+        [Route("{id:int}")]
+        public IActionResult GetEmployeesId(int id)
         {
             var employee = dbContext.Employees.Find(id);
             if (employee == null)
@@ -56,8 +56,8 @@ namespace EmployeeAdminPortal.Controllers
         }
 
         [HttpPut]
-        [Route("{id:guid}")]
-        public IActionResult UpdateEmployee(Guid id, UpdateEmployeeDto updateEmployeeDto)
+        [Route("{id:int}")]
+        public IActionResult UpdateEmployee(int id, UpdateEmployeeDto updateEmployeeDto)
         {
             var employee = dbContext.Employees.Find(id);
             if (employee == null)
@@ -76,8 +76,8 @@ namespace EmployeeAdminPortal.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:guid}")]
-        public IActionResult DeleteEmployee(Guid id)
+        [Route("{id:int}")]
+        public IActionResult DeleteEmployee(int id)
         {
             var employee = dbContext.Employees.Find(id);
             if (employee == null)
