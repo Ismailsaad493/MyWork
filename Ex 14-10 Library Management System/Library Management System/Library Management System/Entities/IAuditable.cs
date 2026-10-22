@@ -2,7 +2,10 @@
 {
     public interface IAuditable
     {
-        public string? CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
+        string? CreatedBy { get; set; }
+        string? UpdatedBy { get; set; }
+        DateTime CreatedAt { get; set; }
+        DateTime? UpdatedAt { get; set; }
+        int UpdateCount { get; set; }
     }
 }

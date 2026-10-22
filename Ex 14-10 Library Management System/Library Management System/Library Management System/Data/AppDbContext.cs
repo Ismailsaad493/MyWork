@@ -22,9 +22,7 @@ namespace Library_Management_System.Data
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            // Extract the Username directly from the token (Make sure this entire line is copied!)
-            var username = _httpContextAccessor.HttpContext?.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "Unknown User";
-
+            var username = _httpContextAccessor.HttpContext?.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "System";
             var entries = ChangeTracker.Entries<IAuditable>();
 
             foreach (var entry in entries)
@@ -33,16 +31,44 @@ namespace Library_Management_System.Data
                 {
                     entry.Entity.CreatedBy = username;
                     entry.Entity.UpdatedBy = username;
+                    entry.Entity.CreatedAt = DateTime.Now;
+                    entry.Entity.UpdateCount = 0; // Starts at 0, increases on edits
                 }
                 else if (entry.State == EntityState.Modified)
                 {
-                    // Ensure the original creator's name is never overwritten
+                    // Lock creation metadata so it never changes on update
                     entry.Property(e => e.CreatedBy).IsModified = false;
+                    entry.Property(e => e.CreatedAt).IsModified = false;
+
                     entry.Entity.UpdatedBy = username;
+                    entry.Entity.UpdatedAt = DateTime.Now;
+                    entry.Entity.UpdateCount++; // Automatically increments on each modification (1, 2, 3... 10)
                 }
             }
 
             return await base.SaveChangesAsync(cancellationToken);
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Correctly map BookLoan relationships using existing properties to avoid shadow keys
+            modelBuilder.Entity<BookLoan>()
+                .HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BookLoan>()
+                .HasOne(l => l.Book)
+                .WithMany()
+                .HasForeignKey(l => l.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Sets decimal precision for Fines
+            modelBuilder.Entity<Fine>()
+                .Property(f => f.Amount)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }

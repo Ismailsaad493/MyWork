@@ -16,5 +16,8 @@
 
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
+        public int UpdateCount { get; set; } = 0;
     }
 }

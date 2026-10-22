@@ -48,12 +48,13 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
+        Type = SecuritySchemeType.Http, // Changed to Http so Swagger auto-prepends "Bearer"
+        Scheme = "bearer",               // Lowercase bearer scheme
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer' [space] and then your valid token."
+        Description = "Paste your JWT token below. (Do NOT type the word 'Bearer', it is added automatically)."
     });
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -65,7 +66,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
 var app = builder.Build();
 
 // 5. THESE COMMANDS ARE REQUIRED TO KEEP THE APP RUNNING
