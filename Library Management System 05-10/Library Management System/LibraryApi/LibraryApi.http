@@ -1,6 +1,60 @@
-@LibraryApi_HostAddress = http://localhost:5098
+@LibraryApi_HostAddress = https://localhost:7054
 
-GET {{LibraryApi_HostAddress}}/weatherforecast/
+### List books
+GET {{LibraryApi_HostAddress}}/api/books
 Accept: application/json
 
-###
+### Create a book
+POST {{LibraryApi_HostAddress}}/api/books
+Content-Type: application/json
+
+{
+  "title": "Clean Code",
+  "author": "Robert C. Martin"
+}
+
+### Add a member
+POST {{LibraryApi_HostAddress}}/api/members
+Content-Type: application/json
+
+{
+  "fullName": "Avery Reader",
+  "email": "avery@example.com"
+}
+
+### Check out a book (replace the IDs with values returned above)
+POST {{LibraryApi_HostAddress}}/api/loans
+Content-Type: application/json
+
+{
+  "bookId": 1,
+  "memberId": 1
+}
+
+### Add a Book Damage fine (amount is fixed at ₹0)
+POST {{LibraryApi_HostAddress}}/api/fines
+Content-Type: application/json
+
+{
+  "fineType": "Book Damage",
+  "bookId": 1
+}
+
+### Add a Late Submission fine after the loan has been returned late
+POST {{LibraryApi_HostAddress}}/api/fines
+Content-Type: application/json
+
+{
+  "fineType": "Late Submission",
+  "bookId": 1,
+  "amount": 25.00
+}
+
+### Record a fine payment (paymentDate is a calendar date, without a timezone)
+POST {{LibraryApi_HostAddress}}/api/fines/1/payment
+Content-Type: application/json
+
+{
+  "paymentDate": "2026-10-27",
+  "paymentMethod": "UPI"
+}
