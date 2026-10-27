@@ -9,7 +9,7 @@ namespace Library_Management_System.Repositories
         Task<User?> GetByUsernameAsync(string username);
         Task<User> AddAsync(User user);
         Task<User?> GetByIdAsync(int id);
-        Task<User> UpdateAsync(User user); // FIXED: Moved this into the interface!
+        Task<User> UpdateAsync(User user);
     }
 
     public class UserRepository : IUserRepository
@@ -23,7 +23,10 @@ namespace Library_Management_System.Repositories
 
         public async Task<User?> GetByUsernameAsync(string username)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            // ADDED: .Include(u => u.Role) to fetch the linked Role data
+            return await _context.Users
+                .Include(u => u.Role)
+                .SingleOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<User> AddAsync(User user)
@@ -35,10 +38,12 @@ namespace Library_Management_System.Repositories
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            // ADDED: .Include(u => u.Role) to fetch the linked Role data
+            return await _context.Users
+                .Include(u => u.Role)
+                .SingleOrDefaultAsync(u => u.Id == id);
         }
 
-        // FIXED: Now properly implements the interface method
         public async Task<User> UpdateAsync(User user)
         {
             _context.Users.Update(user);

@@ -20,6 +20,11 @@ namespace Library_Management_System.Data
         public DbSet<BookLoan> BookLoans { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Fine> Fines { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
+        // FIXED: Added the missing Authors table
+        public DbSet<Author> Authors { get; set; }
+
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -49,32 +54,46 @@ namespace Library_Management_System.Data
             return await base.SaveChangesAsync(cancellationToken);
         }
 
-        // Only ONE OnModelCreating method is allowed
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // ---> ADDED: Tell SQL Server to auto-generate the UserCode using the Id
+            // FIXED: Only ONE mapping per relationship. 
+
+            // 1. Author -> Books
+            modelBuilder.Entity<Book>()
+                .HasOne(b => b.Author)
+                .WithMany(a => a.Books)
+                .HasForeignKey(b => b.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 2. Student -> BookLoans
+            modelBuilder.Entity<BookLoan>()
+                .HasOne(bl => bl.Student)
+                .WithMany(s => s.BookLoans)
+                .HasForeignKey(bl => bl.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 3. Book -> BookLoans
+            modelBuilder.Entity<BookLoan>()
+                .HasOne(bl => bl.Book)
+                .WithMany(b => b.BookLoans)
+                .HasForeignKey(bl => bl.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Existing computed columns and properties
             modelBuilder.Entity<User>()
                 .Property(u => u.UserCode)
                 .HasComputedColumnSql("'LIB' + RIGHT('000' + CAST([Id] AS VARCHAR(10)), 3)", stored: true);
 
-            // Correctly links BookLoan exclusively to Student
-            modelBuilder.Entity<BookLoan>()
-                .HasOne(l => l.Student)
-                .WithMany(s => s.BookLoans)
-                .HasForeignKey(l => l.StudentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<BookLoan>()
-                .HasOne(l => l.Book)
-                .WithMany()
-                .HasForeignKey(l => l.BookId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Fine>()
                 .Property(f => f.Amount)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "Admin" },
+                new Role { Id = 2, Name = "Student" }
+            );
         }
     }
 }

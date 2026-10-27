@@ -22,6 +22,27 @@ namespace Library_Management_System.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Library_Management_System.Entities.Author", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Authors");
+                });
+
             modelBuilder.Entity("Library_Management_System.Entities.Book", b =>
                 {
                     b.Property<int>("Id")
@@ -30,9 +51,8 @@ namespace Library_Management_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -72,6 +92,8 @@ namespace Library_Management_System.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Books");
                 });
@@ -184,8 +206,15 @@ namespace Library_Management_System.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("BookLoanId")
+                    b.Property<int?>("BookId")
                         .HasColumnType("int");
+
+                    b.Property<int?>("BookLoanId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FineType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
@@ -205,6 +234,35 @@ namespace Library_Management_System.Migrations
                     b.ToTable("Fines");
                 });
 
+            modelBuilder.Entity("Library_Management_System.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Student"
+                        });
+                });
+
             modelBuilder.Entity("Library_Management_System.Entities.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -213,11 +271,22 @@ namespace Library_Management_System.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("BloodGroup")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ContactNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -260,9 +329,8 @@ namespace Library_Management_System.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UniversityId")
                         .IsRequired()
@@ -280,13 +348,26 @@ namespace Library_Management_System.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Library_Management_System.Entities.Book", b =>
+                {
+                    b.HasOne("Library_Management_System.Entities.Author", "Author")
+                        .WithMany("Books")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("Library_Management_System.Entities.BookLoan", b =>
                 {
                     b.HasOne("Library_Management_System.Entities.Book", "Book")
-                        .WithMany()
+                        .WithMany("BookLoans")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -310,9 +391,7 @@ namespace Library_Management_System.Migrations
                 {
                     b.HasOne("Library_Management_System.Entities.BookLoan", "BookLoan")
                         .WithMany()
-                        .HasForeignKey("BookLoanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BookLoanId");
 
                     b.HasOne("Library_Management_System.Entities.Student", "Student")
                         .WithMany()
@@ -323,6 +402,27 @@ namespace Library_Management_System.Migrations
                     b.Navigation("BookLoan");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Library_Management_System.Entities.User", b =>
+                {
+                    b.HasOne("Library_Management_System.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Library_Management_System.Entities.Author", b =>
+                {
+                    b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Library_Management_System.Entities.Book", b =>
+                {
+                    b.Navigation("BookLoans");
                 });
 
             modelBuilder.Entity("Library_Management_System.Entities.Student", b =>

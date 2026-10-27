@@ -27,7 +27,12 @@ namespace Library_Management_System.Service
                 Name = dto.Name,
                 UniversityId = dto.UniversityId,
                 Department = dto.Department,
-                ContactNumber = dto.ContactNumber
+                ContactNumber = dto.ContactNumber,
+
+                // FIXED: Map the new fields so they are saved to the database
+                DateOfBirth = dto.DateOfBirth,
+                Gender = dto.Gender,
+                BloodGroup = dto.BloodGroup
             };
 
             return await _repository.AddAsync(student);

@@ -27,19 +27,16 @@ namespace Library_Management_System.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            // Check if the username is already taken
             if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             {
                 return BadRequest(new { Message = "Username already exists. Please choose another one." });
             }
 
-            // Create the new user and hash their password securely
             var newUser = new User
             {
                 Username = request.Username,
-                Password = BCrypt.Net.BCrypt.HashPassword(request.Password), // Hashing the password
-                Role = request.Role,
-                
+                Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                RoleId = request.RoleId // FIXED: Uses the new integer RoleId
             };
 
             await _context.Users.AddAsync(newUser);
@@ -52,7 +49,10 @@ namespace Library_Management_System.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            // FIXED: Added .Include(u => u.Role) so the database pulls the actual Role text (like "Admin")
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Username == request.Username);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
@@ -66,7 +66,8 @@ namespace Library_Management_System.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role),
+                // FIXED: Extracts the string Name from the linked Role table for the JWT token
+                new Claim(ClaimTypes.Role, user.Role != null ? user.Role.Name : ""),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -79,7 +80,13 @@ namespace Library_Management_System.Controllers
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Ok(new { Token = tokenString, Message = "Login successful!", Role = user.Role });
+            return Ok(new
+            {
+                Token = tokenString,
+                Message = "Login successful!",
+                RoleId = user.RoleId,
+                RoleName = user.Role?.Name
+            });
         }
 
         [Authorize]

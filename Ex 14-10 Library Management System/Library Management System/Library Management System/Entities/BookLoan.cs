@@ -1,16 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Library_Management_System.Entities
+﻿namespace Library_Management_System.Entities
 {
     public class BookLoan : IAuditable
     {
         public int Id { get; set; }
+
+        // EF Core will automatically link these two based on the naming convention
         public int BookId { get; set; }
         public Book? Book { get; set; }
 
+        // EF Core will automatically link these two based on the naming convention
         public int StudentId { get; set; }
-
-        [ForeignKey("StudentId")]
         public Student? Student { get; set; }
 
         public DateTime LoanDate { get; set; } = DateTime.Now;

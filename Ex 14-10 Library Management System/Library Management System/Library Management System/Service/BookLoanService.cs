@@ -12,7 +12,6 @@ namespace Library_Management_System.Service
             _context = context;
         }
 
-        // Updated to use DateTime instead of DateOnly
         private void ValidateLoanDates(DateTime loanDate, DateTime dueDate, DateTime? returnDate)
         {
             if (dueDate < loanDate) throw new ArgumentException("Due date cannot be earlier than loan date.");
@@ -22,12 +21,11 @@ namespace Library_Management_System.Service
         public async Task<BookLoan> BorrowBookAsync(int studentId, int bookId)
         {
             var book = await _context.Books.FindAsync(bookId);
-            var student = await _context.Students.FindAsync(studentId); // FIXED: Capitalized and pluralized to Students
+            var student = await _context.Students.FindAsync(studentId);
 
             if (book == null || student == null) throw new Exception("Book or Student not found.");
             if (!book.IsAvailable || book.Quantity <= 0) throw new Exception("This book is currently out of stock.");
 
-            // Updated to use DateTime
             var loanDate = DateTime.Now;
             var dueDate = loanDate.AddDays(14);
 
@@ -38,7 +36,8 @@ namespace Library_Management_System.Service
                 BookId = bookId,
                 StudentId = studentId,
                 LoanDate = loanDate,
-                DueDate = dueDate
+                DueDate = dueDate,
+                IsReturned = false
             };
 
             book.Quantity -= 1;
@@ -77,7 +76,6 @@ namespace Library_Management_System.Service
             var book = await _context.Books.FindAsync(loan.BookId);
             if (book == null) throw new Exception("Associated book not found.");
 
-            // Updated to use DateTime
             var returnDate = DateTime.Now;
             ValidateLoanDates(loan.LoanDate, loan.DueDate, returnDate);
 
@@ -87,14 +85,20 @@ namespace Library_Management_System.Service
             loan.LastModifiedDate = DateTime.Now;
 
             decimal fineAmount = 0;
-
-            // Updated fine calculation logic to support DateTime subtraction
             var daysLate = Math.Ceiling((returnDate - loan.DueDate).TotalDays);
 
             if (daysLate > 0)
             {
-                fineAmount = (decimal)daysLate * 10; // FIXED: Removed hyphen, added * symbol
-                var fine = new Fine { BookLoanId = loan.Id, StudentId = loan.StudentId, Amount = fineAmount, IsPaid = false }; // FIXED: Changed UserId to StudentId
+                // FIXED: Corrected C# multiplication syntax
+                fineAmount = (decimal)daysLate * 10;
+
+                var fine = new Fine
+                {
+                    BookLoanId = loan.Id,
+                    StudentId = loan.StudentId,
+                    Amount = fineAmount,
+                    IsPaid = false
+                };
                 await _context.Fines.AddAsync(fine);
             }
 
