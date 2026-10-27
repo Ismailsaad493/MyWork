@@ -23,23 +23,6 @@ namespace Library_Management_System.Controllers
             _configuration = configuration;
         }
 
-        // DTO for creating a new account
-        public class RegisterDto
-        {
-            public string Username { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-            public string Role { get; set; } = "Student"; // Can be Student, Admin, Librarian, Faculty
-            public string UniversityId { get; set; } = string.Empty;
-            public string Department { get; set; } = string.Empty;
-        }
-
-        // DTO for logging in
-        public class LoginDto
-        {
-            public string Username { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
-
         // 1. CREATE A NEW LOGIN (REGISTER)
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
@@ -56,8 +39,7 @@ namespace Library_Management_System.Controllers
                 Username = request.Username,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password), // Hashing the password
                 Role = request.Role,
-                UniversityId = request.UniversityId,
-                Department = request.Department
+                
             };
 
             await _context.Users.AddAsync(newUser);

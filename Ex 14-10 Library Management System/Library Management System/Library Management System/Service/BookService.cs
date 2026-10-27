@@ -1,48 +1,60 @@
-﻿using Library_Management_System.Entities;
-using Library_Management_System.Repositories;
+﻿using Library_Management_System.Data;
+using Library_Management_System.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace Library_Management_System.Services
+namespace Library_Management_System.Service
 {
     public class BookService : IBookService
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly AppDbContext _context;
 
-        public BookService(IBookRepository bookRepository)
+        public BookService(AppDbContext context)
         {
-            _bookRepository = bookRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
-            return await _bookRepository.GetAllBooksAsync();
+            return await _context.Books.ToListAsync();
         }
 
         public async Task<Book?> GetBookByIdAsync(int id)
         {
-            return await _bookRepository.GetBookByIdAsync(id);
+            return await _context.Books.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Book>> SearchBooksAsync(string? title, string? author)
+        {
+            var query = _context.Books.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(title))
+                query = query.Where(b => b.Title.Contains(title));
+            if (!string.IsNullOrWhiteSpace(author))
+                query = query.Where(b => b.Author.Contains(author));
+
+            return await query.ToListAsync();
         }
 
         public async Task AddBookAsync(Book book)
         {
-            // Business logic: Update availability based on quantity
-            book.IsAvailable = book.Quantity > 0;
-            await _bookRepository.AddBookAsync(book);
+            await _context.Books.AddAsync(book);
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateBookAsync(Book book)
         {
-            book.IsAvailable = book.Quantity > 0;
-            await _bookRepository.UpdateBookAsync(book);
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteBookAsync(int id)
         {
-            await _bookRepository.DeleteBookAsync(id);
-        }
-
-        public async Task<IEnumerable<Book>> SearchBooksAsync(string? title, string? author, string? isbn, string? category)
-        {
-            return await _bookRepository.SearchBooksAsync(title, author, isbn, category);
+            var book = await _context.Books.FindAsync(id);
+            if (book != null)
+            {
+                _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

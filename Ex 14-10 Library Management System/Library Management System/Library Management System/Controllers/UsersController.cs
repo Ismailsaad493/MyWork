@@ -1,7 +1,7 @@
-﻿using Library_Management_System.Data;
-using Library_Management_System.Entities;
+﻿using Library_Management_System.Entities;
+using Library_Management_System.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Library_Management_System.Controllers
 {
@@ -9,76 +9,49 @@ namespace Library_Management_System.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUserService _userService;
 
-        public UsersController(AppDbContext context)
+        public UsersController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
-        // POST: api/Users/register
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] User newUser)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            if (await _context.Users.AnyAsync(u => u.Username == newUser.Username))
-                return BadRequest(new { Message = "Username already exists." });
-
-            if (await _context.Users.AnyAsync(u => u.UniversityId == newUser.UniversityId))
-                return BadRequest(new { Message = "Student/Faculty ID already registered." });
-
-            // Hash the password securely using BCrypt before saving
-            newUser.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
-
-            await _context.Users.AddAsync(newUser);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { Message = $"{newUser.Role} registered successfully!" });
+            var result = await _userService.RegisterAsync(dto);
+            if (result == null) return BadRequest(new { Message = "Username already exists." });
+            return Ok(result);
         }
 
-        // GET: api/Users/{id}/history
-        [HttpGet("{id}/history")]
-        public async Task<IActionResult> GetBorrowingHistory(int id)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            // First, verify the user exists
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-                return NotFound(new { Message = "User not found." });
-
-            // Fetch the loan history and join it with the Book details
-            var history = await _context.BookLoans
-                .Where(loan => loan.UserId == id)
-                .Join(_context.Books,
-                      loan => loan.BookId,
-                      book => book.Id,
-                      (loan, book) => new
-                      {
-                          LoanId = loan.Id,
-                          BookTitle = book.Title,
-                          Author = book.Author,
-                          LoanDate = loan.LoanDate,
-                          DueDate = loan.DueDate,
-                          ReturnDate = loan.ReturnDate,
-                          IsReturned = loan.IsReturned
-                      })
-                .OrderByDescending(h => h.LoanDate) // Shows newest borrows first
-                .ToListAsync();
-
-            if (!history.Any())
-                return Ok(new { Message = "No borrowing history found for this user." });
-
-            return Ok(history);
+            var result = await _userService.LoginAsync(dto);
+            if (result == null) return Unauthorized(new { Message = "Invalid credentials." });
+            return Ok(result);
         }
 
-        // GET: api/Users/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserDetails(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _userService.GetUserDetailsAsync(id);
             if (user == null) return NotFound(new { Message = "User not found." });
-
-            // Hide the password before sending data back
-            user.Password = "********";
             return Ok(user);
         }
+        // PUT: api/Users/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(id, dto);
+
+            if (updatedUser == null)
+                return NotFound(new { Message = "User not found." });
+
+            return Ok(new { Message = "User updated successfully.", User = updatedUser });
+        }
+
     }
 }

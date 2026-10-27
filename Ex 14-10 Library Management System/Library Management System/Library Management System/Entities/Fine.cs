@@ -1,23 +1,24 @@
-﻿namespace Library_Management_System.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Library_Management_System.Entities
 {
-    public class Fine : IAuditable
+    public class Fine
     {
         public int Id { get; set; }
 
         public int BookLoanId { get; set; }
+
+        [ForeignKey("BookLoanId")]
         public BookLoan? BookLoan { get; set; }
 
-        public int UserId { get; set; }
-        public User? User { get; set; }
+        // FIXED: Changed UserId to StudentId so it links to the new Student table
+        public int StudentId { get; set; }
+        public DateTime? PaymentDate { get; set; }
+
+        [ForeignKey("StudentId")]
+        public Student? Student { get; set; }
 
         public decimal Amount { get; set; }
         public bool IsPaid { get; set; } = false;
-        public DateTime? PaymentDate { get; set; }
-
-        public string? CreatedBy { get; set; }
-        public string? UpdatedBy { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? UpdatedAt { get; set; }
-        public int UpdateCount { get; set; } = 0;
     }
 }

@@ -50,11 +50,11 @@ namespace Library_Management_System.Controllers
             var pendingFines = await _context.Fines.Where(f => !f.IsPaid).SumAsync(f => (decimal?)f.Amount) ?? 0;
 
             var detailedFines = await _context.Fines
-                .Include(f => f.User)
+                .Include(f => f.Student)
                 .Select(f => new
                 {
                     FineId = f.Id,
-                    Username = f.User != null ? f.User.Username : "Unknown",
+                    Username = f.Student != null ? f.Student.Name : "Unknown",
                     Amount = f.Amount,
                     Status = f.IsPaid ? "Paid" : "Pending",
                     PaymentDate = f.PaymentDate
@@ -79,12 +79,12 @@ namespace Library_Management_System.Controllers
         {
             var borrowings = await _context.BookLoans
                 .Include(l => l.Book)
-                .Include(l => l.User)
+                .Include(l => l.Student)
                 .Select(l => new
                 {
                     LoanId = l.Id,
                     BookTitle = l.Book != null ? l.Book.Title : "Unknown",
-                    Username = l.User != null ? l.User.Username : "Unknown",
+                    Username = l.Student != null ? l.Student.Name : "Unknown",
                     LoanDate = l.LoanDate,
                     DueDate = l.DueDate,
                     ReturnDate = l.ReturnDate,

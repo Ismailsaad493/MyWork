@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization; 
+﻿using Microsoft.AspNetCore.Authorization;
 using Library_Management_System.Data;
 using Library_Management_System.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +19,13 @@ namespace Library_Management_System.Controllers
         }
 
         [HttpPost("borrow")]
-        public async Task<IActionResult> BorrowBook(int userId, int bookId)
+        public async Task<IActionResult> BorrowBook(int studentId, int bookId) // FIXED: Changed userId to studentId
         {
             var book = await _context.Books.FindAsync(bookId);
-            var user = await _context.Users.FindAsync(userId);
+            var student = await _context.Students.FindAsync(studentId); // FIXED: Changed _context.Use to _context.Students and passed studentId
 
-            if (book == null || user == null)
-                return NotFound(new { Message = "Book or User not found." });
+            if (book == null || student == null) // FIXED: Changed user to student
+                return NotFound(new { Message = "Book or Student not found." });
 
             if (!book.IsAvailable || book.Quantity <= 0)
                 return BadRequest(new { Message = "This book is currently out of stock." });
@@ -33,7 +33,7 @@ namespace Library_Management_System.Controllers
             var loan = new BookLoan
             {
                 BookId = bookId,
-                UserId = userId,
+                StudentId = studentId,
                 DueDate = DateTime.Now.AddDays(14)
             };
 
@@ -46,6 +46,7 @@ namespace Library_Management_System.Controllers
 
             return Ok(new { Message = "Book borrowed successfully!", DueDate = loan.DueDate });
         }
+
         // PUT: api/BookLoans/extend/{loanId}
         [Authorize(Roles = "Admin, Librarian")]
         [HttpPut("extend/{loanId}")]
@@ -95,7 +96,7 @@ namespace Library_Management_System.Controllers
             // 2. Mark the loan as returned and record the audit trail
             loan.IsReturned = true;
             loan.ReturnDate = DateTime.Now;
-            loan.LastModifiedBy = currentStaff;      // <--- This saves the name to the database!
+            loan.LastModifiedBy = currentStaff;
             loan.LastModifiedDate = DateTime.Now;
 
             // 3. AUTOMATIC FINE CALCULATION
@@ -106,12 +107,12 @@ namespace Library_Management_System.Controllers
                 var daysLate = Math.Ceiling((loan.ReturnDate.Value - loan.DueDate).TotalDays);
                 if (daysLate > 0)
                 {
-                    fineAmount = (decimal)daysLate * 10; // <--- FIXED: Added the * multiplication symbol here
+                    fineAmount = (decimal)daysLate * 10; // FIXED: Removed the leading hyphen and properly added the * symbol
 
                     var fine = new Fine
                     {
                         BookLoanId = loan.Id,
-                        UserId = loan.UserId,
+                        StudentId = loan.StudentId,
                         Amount = fineAmount,
                         IsPaid = false
                     };

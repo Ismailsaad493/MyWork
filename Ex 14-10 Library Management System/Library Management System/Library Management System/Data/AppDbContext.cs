@@ -13,8 +13,9 @@ namespace Library_Management_System.Data
             _httpContextAccessor = httpContextAccessor;
         }
 
+        // All DbSets grouped together cleanly at the top
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Student> Students { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<BookLoan> BookLoans { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -22,7 +23,7 @@ namespace Library_Management_System.Data
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var username = _httpContextAccessor.HttpContext?.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "System";
+            var username = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name)?.Value ?? "System";
             var entries = ChangeTracker.Entries<IAuditable>();
 
             foreach (var entry in entries)
@@ -32,31 +33,37 @@ namespace Library_Management_System.Data
                     entry.Entity.CreatedBy = username;
                     entry.Entity.UpdatedBy = username;
                     entry.Entity.CreatedAt = DateTime.Now;
-                    entry.Entity.UpdateCount = 0; // Starts at 0, increases on edits
+                    entry.Entity.UpdateCount = 0;
                 }
                 else if (entry.State == EntityState.Modified)
                 {
-                    // Lock creation metadata so it never changes on update
                     entry.Property(e => e.CreatedBy).IsModified = false;
                     entry.Property(e => e.CreatedAt).IsModified = false;
 
                     entry.Entity.UpdatedBy = username;
                     entry.Entity.UpdatedAt = DateTime.Now;
-                    entry.Entity.UpdateCount++; // Automatically increments on each modification (1, 2, 3... 10)
+                    entry.Entity.UpdateCount++;
                 }
             }
 
             return await base.SaveChangesAsync(cancellationToken);
         }
+
+        // Only ONE OnModelCreating method is allowed
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Correctly map BookLoan relationships using existing properties to avoid shadow keys
+            // ---> ADDED: Tell SQL Server to auto-generate the UserCode using the Id
+            modelBuilder.Entity<User>()
+                .Property(u => u.UserCode)
+                .HasComputedColumnSql("'LIB' + RIGHT('000' + CAST([Id] AS VARCHAR(10)), 3)", stored: true);
+
+            // Correctly links BookLoan exclusively to Student
             modelBuilder.Entity<BookLoan>()
-                .HasOne(l => l.User)
-                .WithMany()
-                .HasForeignKey(l => l.UserId)
+                .HasOne(l => l.Student)
+                .WithMany(s => s.BookLoans)
+                .HasForeignKey(l => l.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<BookLoan>()
@@ -65,7 +72,6 @@ namespace Library_Management_System.Data
                 .HasForeignKey(l => l.BookId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Sets decimal precision for Fines
             modelBuilder.Entity<Fine>()
                 .Property(f => f.Amount)
                 .HasColumnType("decimal(18,2)");
