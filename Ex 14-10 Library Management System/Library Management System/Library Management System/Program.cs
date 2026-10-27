@@ -1,6 +1,12 @@
 using Library_Management_System.Data;
 using Library_Management_System.Repositories;
 using Library_Management_System.Service;
+
+// ADDED: Using statements for the new isolated module
+using Library_Management_System.NewModule.Data;
+using Library_Management_System.NewModule.Repositories;
+using Library_Management_System.NewModule.Services;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,21 +20,46 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
+// 1. Register Existing DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// ADDED: Register the separate DbContext for the new module
+builder.Services.AddDbContext<NewBooksDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NewBooksDbConnection")));
+
+
 // 2. Register Your Services (Both Repositories AND Services)
+
+// Existing Registrations
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IFineRepository, FineRepository>();
 builder.Services.AddScoped<IFineService, FineService>();
-
-// ADDED: These are required to fix the 500 Internal Server Errors
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
+
+// ADDED: New Module Registrations (Uncomment the others once you create their classes)
+builder.Services.AddScoped<IBookMasterRepository, BookMasterRepository>();
+builder.Services.AddScoped<IBookMasterService, BookMasterService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IPublisherService, PublisherService>();
+
+builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
+builder.Services.AddScoped<IBookCopyService, BookCopyService>();
+// builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+// builder.Services.AddScoped<ICategoryService, CategoryService>();
+// builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+// builder.Services.AddScoped<IPublisherService, PublisherService>();
+// builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
+// builder.Services.AddScoped<IBookCopyService, BookCopyService>();
+
 
 // 3. Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
