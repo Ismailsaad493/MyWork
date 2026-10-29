@@ -34,13 +34,13 @@ builder.Services.AddDbContext<NewBooksDbContext>(options =>
 // Existing Registrations
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IFineRepository, FineRepository>();
+builder.Services.AddScoped<Library_Management_System.Repositories.IStudentRepository, Library_Management_System.Repositories.StudentRepository>();
+builder.Services.AddScoped<Library_Management_System.Service.IStudentService, Library_Management_System.Service.StudentService>(); builder.Services.AddScoped<IFineRepository, FineRepository>();
 builder.Services.AddScoped<IFineService, FineService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
+
 
 // ADDED: New Module Registrations (Uncomment the others once you create their classes)
 builder.Services.AddScoped<IBookMasterRepository, BookMasterRepository>();
@@ -53,6 +53,11 @@ builder.Services.AddScoped<IPublisherService, PublisherService>();
 
 builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IStudentRepository, Library_Management_System.NewModule.Repositories.StudentRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IStudentService, Library_Management_System.NewModule.Services.StudentService>();
 // builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 // builder.Services.AddScoped<ICategoryService, CategoryService>();
 // builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();

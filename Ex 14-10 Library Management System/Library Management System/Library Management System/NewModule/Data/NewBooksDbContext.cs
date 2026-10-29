@@ -22,6 +22,8 @@ namespace Library_Management_System.NewModule.Data
         public DbSet<PublisherMaster> Publishers { get; set; }
         public DbSet<BookMaster> Books { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
+        public DbSet<DepartmentMaster> Departments { get; set; }
+        public DbSet<StudentMaster> Students { get; set; }
 
         // ========================================================
         // AUTOMATED AUDITING & SOFT DELETE LOGIC
@@ -71,6 +73,47 @@ namespace Library_Management_System.NewModule.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasSequence<int>("DepartmentSeq").StartsAt(1).IncrementsBy(1);
+            modelBuilder.HasSequence<int>("StudentSeq").StartsAt(1).IncrementsBy(1);
+
+            // ========================================================
+            // STUDENT MANAGEMENT MAPPINGS
+            // ========================================================
+
+            // 1. DepartmentMaster
+            modelBuilder.Entity<DepartmentMaster>().ToTable("department-master");
+            modelBuilder.Entity<DepartmentMaster>().HasKey(d => d.DId);
+
+            modelBuilder.Entity<DepartmentMaster>().Property(d => d.DId)
+                .HasColumnName("d_id")
+                .HasDefaultValueSql("CONCAT('D', NEXT VALUE FOR DepartmentSeq)") // Generates D1, D2, D3
+                .ValueGeneratedOnAdd(); // Tells EF Core to fetch the ID from SQL after saving
+
+            modelBuilder.Entity<DepartmentMaster>().Property(d => d.DName)
+                .HasColumnName("d_name").IsRequired();
+
+            // 2. StudentMaster
+            modelBuilder.Entity<StudentMaster>().ToTable("students-master");
+            modelBuilder.Entity<StudentMaster>().HasKey(s => s.SId);
+
+            modelBuilder.Entity<StudentMaster>().Property(s => s.SId)
+                .HasColumnName("s_id")
+                .HasDefaultValueSql("CONCAT('S', NEXT VALUE FOR StudentSeq)") // Generates S1, S2, S3
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<StudentMaster>().Property(s => s.SName)
+                .HasColumnName("s_name").IsRequired();
+
+            modelBuilder.Entity<StudentMaster>().Property(s => s.DId)
+                .HasColumnName("d_id").IsRequired();
+
+            // 3. Foreign Key Relationship
+            modelBuilder.Entity<StudentMaster>()
+                .HasOne(s => s.Department)
+                .WithMany(d => d.Students)
+                .HasForeignKey(s => s.DId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // 1. categories-master Table Mapping
             modelBuilder.Entity<CategoryMaster>().ToTable("categories-master");

@@ -22,6 +22,10 @@ namespace Library_Management_System.Migrations.NewBooksDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("DepartmentSeq");
+
+            modelBuilder.HasSequence<int>("StudentSeq");
+
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookCopy", b =>
                 {
                     b.Property<int>("BookCopyId")
@@ -177,6 +181,48 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.ToTable("categories-master", (string)null);
                 });
 
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.DepartmentMaster", b =>
+                {
+                    b.Property<string>("DId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("d_id")
+                        .HasDefaultValueSql("CONCAT('D', NEXT VALUE FOR DepartmentSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("DName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("d_name");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("DId");
+
+                    b.ToTable("departments-master", (string)null);
+                });
+
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.PublisherMaster", b =>
                 {
                     b.Property<int>("PId")
@@ -220,6 +266,55 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.ToTable("publishers-master", (string)null);
                 });
 
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.StudentMaster", b =>
+                {
+                    b.Property<string>("SId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("s_id")
+                        .HasDefaultValueSql("CONCAT('S', NEXT VALUE FOR StudentSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("DId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("d_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("SName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("s_name");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("SId");
+
+                    b.HasIndex("DId");
+
+                    b.ToTable("students-master", (string)null);
+                });
+
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookCopy", b =>
                 {
                     b.HasOne("Library_Management_System.NewModule.Entities.BookMaster", "Book")
@@ -250,6 +345,17 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.Navigation("Publisher");
                 });
 
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.StudentMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.DepartmentMaster", "Department")
+                        .WithMany("Students")
+                        .HasForeignKey("DId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookMaster", b =>
                 {
                     b.Navigation("Copies");
@@ -258,6 +364,11 @@ namespace Library_Management_System.Migrations.NewBooksDb
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.CategoryMaster", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.DepartmentMaster", b =>
+                {
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.PublisherMaster", b =>
