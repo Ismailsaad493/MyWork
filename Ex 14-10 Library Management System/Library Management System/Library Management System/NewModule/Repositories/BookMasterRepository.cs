@@ -1,6 +1,8 @@
 ﻿using Library_Management_System.NewModule.Data;
 using Library_Management_System.NewModule.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Repositories
 {
@@ -15,7 +17,6 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<IEnumerable<BookMaster>> GetAllAsync()
         {
-            // Includes the relational data so the DTOs can map the names
             return await _context.Books
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
@@ -39,7 +40,20 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<bool> IsbnExistsAsync(string isbn)
         {
-            return await _context.Books.AnyAsync(b => b.Isbn == isbn);
+            if (string.IsNullOrWhiteSpace(isbn))
+                return false;
+
+            var normalizedIsbn = isbn.Trim().ToLower();
+
+            return await _context.Books
+                .AnyAsync(b => b.Isbn != null && b.Isbn.ToLower() == normalizedIsbn);
+        }
+
+        // NEW: For Update
+        public async Task UpdateAsync(BookMaster book)
+        {
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync();
         }
     }
 }

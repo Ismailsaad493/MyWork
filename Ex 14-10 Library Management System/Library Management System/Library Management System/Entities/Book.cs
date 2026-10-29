@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library_Management_System.Entities
 {
-    public class Book : IAuditable
+    public class Book 
     {
         [Key]
         public int Id { get; set; }

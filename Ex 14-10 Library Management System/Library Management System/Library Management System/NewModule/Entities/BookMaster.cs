@@ -1,6 +1,6 @@
 ﻿namespace Library_Management_System.NewModule.Entities
 {
-    public class BookMaster
+    public class BookMaster : AuditableEntity
     {
         public int BookId { get; set; }
         public string Title { get; set; } = string.Empty;

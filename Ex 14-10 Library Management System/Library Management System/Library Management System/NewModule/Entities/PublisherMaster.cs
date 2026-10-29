@@ -1,6 +1,6 @@
 ﻿namespace Library_Management_System.NewModule.Entities
 {
-    public class PublisherMaster
+    public class PublisherMaster : AuditableEntity
     {
         public int PId { get; set; }
         public string PName { get; set; } = string.Empty;

@@ -2,7 +2,7 @@
 
 namespace Library_Management_System.NewModule.Entities
 {
-    public class BookCopy
+    public class BookCopy : AuditableEntity
     {
         public int BookCopyId { get; set; }
 

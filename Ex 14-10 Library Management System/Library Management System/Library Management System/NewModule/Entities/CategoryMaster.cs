@@ -1,6 +1,6 @@
 ﻿namespace Library_Management_System.NewModule.Entities
 {
-    public class CategoryMaster
+    public class CategoryMaster : AuditableEntity
     {
         public int CId { get; set; }
         public string CName { get; set; } = string.Empty;

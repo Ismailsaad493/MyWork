@@ -22,7 +22,7 @@ namespace Library_Management_System.Data
         public DbSet<Fine> Fines { get; set; }
         public DbSet<Role> Roles { get; set; }
 
-        // FIXED: Added the missing Authors table
+        // FIXED: A dded the missing Authors table
         public DbSet<Author> Authors { get; set; }
 
 
@@ -88,7 +88,7 @@ namespace Library_Management_System.Data
 
             modelBuilder.Entity<Fine>()
                 .Property(f => f.Amount)
-                .HasColumnType("decimal(18,2)");
+                 .HasColumnType("decimal(18,2)");
 
             modelBuilder.Entity<Role>().HasData(
                 new Role { Id = 1, Name = "Admin" },

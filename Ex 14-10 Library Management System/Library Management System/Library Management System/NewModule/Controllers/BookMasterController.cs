@@ -1,6 +1,8 @@
 ﻿using Library_Management_System.NewModule.Dtos;
 using Library_Management_System.NewModule.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Controllers
 {
@@ -29,6 +31,22 @@ namespace Library_Management_System.NewModule.Controllers
             {
                 var result = await _service.CreateBookAsync(dto);
                 return CreatedAtAction(nameof(GetAll), new { id = result.BookId }, result);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] BookMasterUpdateDto dto)
+        {
+            try
+            {
+                var success = await _service.UpdateBookAsync(id, dto);
+                if (!success) return NotFound($"Book with ID {id} not found.");
+
+                return NoContent();
             }
             catch (InvalidOperationException ex)
             {

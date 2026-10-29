@@ -1,58 +1,56 @@
 ﻿using Library_Management_System.NewModule.Dtos;
 using Library_Management_System.NewModule.Entities;
 using Library_Management_System.NewModule.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
+    // The Interface
     public interface IBookCopyService
     {
-        Task<IEnumerable<BookCopyResponseDto>> GetAllCopiesAsync();
-        Task<BookCopyResponseDto> CreateCopyAsync(BookCopyCreateDto dto);
+        Task<IEnumerable<BookCopy>> GetAllCopiesAsync();
+
+        // Note: Assuming you have a CreateDto with BookId. If not, use BookCopyUpdateDto and add BookId to it.
+        Task<BookCopy> CreateCopyAsync(int bookId, string status);
+        Task<bool> UpdateCopyAsync(int id, BookCopyUpdateDto dto);
     }
 
+    // The Implementation
     public class BookCopyService : IBookCopyService
     {
         private readonly IBookCopyRepository _repo;
-        private readonly IBookMasterRepository _bookRepo;
 
-        public BookCopyService(IBookCopyRepository repo, IBookMasterRepository bookRepo)
+        public BookCopyService(IBookCopyRepository repo)
         {
             _repo = repo;
-            _bookRepo = bookRepo;
         }
 
-        public async Task<IEnumerable<BookCopyResponseDto>> GetAllCopiesAsync()
+        public async Task<IEnumerable<BookCopy>> GetAllCopiesAsync()
         {
-            var copies = await _repo.GetAllAsync();
-            return copies.Select(c => new BookCopyResponseDto
-            {
-                BookCopyId = c.BookCopyId,
-                BookId = c.BookId,
-                BookTitle = c.Book?.Title ?? "Unknown",
-                Status = c.Status
-            });
+            return await _repo.GetAllAsync();
         }
 
-        public async Task<BookCopyResponseDto> CreateCopyAsync(BookCopyCreateDto dto)
+        public async Task<BookCopy> CreateCopyAsync(int bookId, string status)
         {
-            // Verify the book actually exists before creating a copy
-            var book = await _bookRepo.GetByIdAsync(dto.BookId);
-            if (book == null) throw new InvalidOperationException($"Book with ID {dto.BookId} does not exist.");
-
             var copy = new BookCopy
             {
-                BookId = dto.BookId,
-                Status = dto.Status
+                BookId = bookId,
+                Status = status
             };
 
-            var saved = await _repo.AddAsync(copy);
-            return new BookCopyResponseDto
-            {
-                BookCopyId = saved.BookCopyId,
-                BookId = saved.BookId,
-                BookTitle = book.Title,
-                Status = saved.Status
-            };
+            return await _repo.AddAsync(copy);
+        }
+
+        public async Task<bool> UpdateCopyAsync(int id, BookCopyUpdateDto dto)
+        {
+            var existingCopy = await _repo.GetByIdAsync(id);
+            if (existingCopy == null) return false;
+
+            existingCopy.Status = dto.Status;
+
+            await _repo.UpdateAsync(existingCopy);
+            return true;
         }
     }
 }

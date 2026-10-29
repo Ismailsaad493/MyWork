@@ -1,6 +1,6 @@
 ﻿namespace Library_Management_System.Entities
 {
-    public class BookLoan : IAuditable
+    public class BookLoan 
     {
         public int Id { get; set; }
 
