@@ -52,6 +52,11 @@ builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+// ---> ADDED RETURN & RETURN DETAIL REGISTRATIONS <---
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IReturnRepository, Library_Management_System.NewModule.Repositories.ReturnRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnService, Library_Management_System.NewModule.Services.ReturnService>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IReturnDetailRepository, Library_Management_System.NewModule.Repositories.ReturnDetailRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnDetailService, Library_Management_System.NewModule.Services.ReturnDetailService>();
 
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IStudentRepository, Library_Management_System.NewModule.Repositories.StudentRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IStudentService, Library_Management_System.NewModule.Services.StudentService>();

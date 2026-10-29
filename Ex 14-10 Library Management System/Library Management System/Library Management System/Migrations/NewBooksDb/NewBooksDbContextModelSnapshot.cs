@@ -24,6 +24,12 @@ namespace Library_Management_System.Migrations.NewBooksDb
 
             modelBuilder.HasSequence<int>("DepartmentSeq");
 
+            modelBuilder.HasSequence<int>("IssueSeq");
+
+            modelBuilder.HasSequence<int>("ReturnDetailSeq");
+
+            modelBuilder.HasSequence<int>("ReturnSeq");
+
             modelBuilder.HasSequence<int>("StudentSeq");
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookCopy", b =>
@@ -220,7 +226,120 @@ namespace Library_Management_System.Migrations.NewBooksDb
 
                     b.HasKey("DId");
 
-                    b.ToTable("departments-master", (string)null);
+                    b.ToTable("department-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.IssueDetailMaster", b =>
+                {
+                    b.Property<int>("IssueDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("issue_detail_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IssueDetailId"), 3001L);
+
+                    b.Property<int>("BookCopyId")
+                        .HasColumnType("int")
+                        .HasColumnName("book_copy_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("due_date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("IssueId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("issue_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("status");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("IssueDetailId");
+
+                    b.HasIndex("BookCopyId");
+
+                    b.HasIndex("IssueId");
+
+                    b.ToTable("issue-detail-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.IssueMaster", b =>
+                {
+                    b.Property<string>("IssueId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("issue_id")
+                        .HasDefaultValueSql("CONCAT('i', NEXT VALUE FOR IssueSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("issue_date");
+
+                    b.Property<string>("SId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("s_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("status");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("IssueId");
+
+                    b.HasIndex("SId");
+
+                    b.ToTable("issue-master", (string)null);
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.PublisherMaster", b =>
@@ -264,6 +383,109 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.HasKey("PId");
 
                     b.ToTable("publishers-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.ReturnDetailMaster", b =>
+                {
+                    b.Property<string>("ReturnDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("return_detail_id")
+                        .HasDefaultValueSql("CONCAT('RD', NEXT VALUE FOR ReturnDetailSeq)");
+
+                    b.Property<string>("Condition")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("condition");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("IssueDetailId")
+                        .HasColumnType("int")
+                        .HasColumnName("issue_detail_id");
+
+                    b.Property<string>("RId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("r_id");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("ReturnDetailId");
+
+                    b.HasIndex("IssueDetailId");
+
+                    b.HasIndex("RId");
+
+                    b.ToTable("return-detail-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.ReturnMaster", b =>
+                {
+                    b.Property<string>("RId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("r_id")
+                        .HasDefaultValueSql("CONCAT('R', NEXT VALUE FOR ReturnSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTime>("ReturnDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("return_date");
+
+                    b.Property<string>("SId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("s_id");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("RId");
+
+                    b.HasIndex("SId");
+
+                    b.ToTable("return-master", (string)null);
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.StudentMaster", b =>
@@ -343,6 +565,62 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.Navigation("Category");
 
                     b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.IssueDetailMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.BookCopy", "BookCopy")
+                        .WithMany()
+                        .HasForeignKey("BookCopyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Library_Management_System.NewModule.Entities.IssueMaster", "Issue")
+                        .WithMany()
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BookCopy");
+
+                    b.Navigation("Issue");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.IssueMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.StudentMaster", null)
+                        .WithMany()
+                        .HasForeignKey("SId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.ReturnDetailMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.IssueDetailMaster", "IssueDetail")
+                        .WithMany()
+                        .HasForeignKey("IssueDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Library_Management_System.NewModule.Entities.ReturnMaster", "Return")
+                        .WithMany()
+                        .HasForeignKey("RId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IssueDetail");
+
+                    b.Navigation("Return");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.ReturnMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.StudentMaster", null)
+                        .WithMany()
+                        .HasForeignKey("SId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.StudentMaster", b =>
