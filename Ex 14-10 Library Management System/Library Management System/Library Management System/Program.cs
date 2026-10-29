@@ -28,29 +28,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddDbContext<NewBooksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NewBooksDbConnection")));
 
-
 // 2. Register Your Services (Both Repositories AND Services)
 
 // Existing Registrations
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<Library_Management_System.Repositories.IStudentRepository, Library_Management_System.Repositories.StudentRepository>();
-builder.Services.AddScoped<Library_Management_System.Service.IStudentService, Library_Management_System.Service.StudentService>(); builder.Services.AddScoped<IFineRepository, FineRepository>();
+builder.Services.AddScoped<Library_Management_System.Service.IStudentService, Library_Management_System.Service.StudentService>();
+builder.Services.AddScoped<IFineRepository, FineRepository>();
 builder.Services.AddScoped<IFineService, FineService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
 
-
-// ADDED: New Module Registrations (Uncomment the others once you create their classes)
+// ADDED: New Module Registrations 
 builder.Services.AddScoped<IBookMasterRepository, BookMasterRepository>();
 builder.Services.AddScoped<IBookMasterService, BookMasterService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-
 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
 builder.Services.AddScoped<IPublisherService, PublisherService>();
-
 builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
@@ -58,13 +55,12 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IStudentRepository, Library_Management_System.NewModule.Repositories.StudentRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IStudentService, Library_Management_System.NewModule.Services.StudentService>();
-// builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-// builder.Services.AddScoped<ICategoryService, CategoryService>();
-// builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
-// builder.Services.AddScoped<IPublisherService, PublisherService>();
-// builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
-// builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 
+// ---> FIXED: ADDED ISSUE & ISSUE DETAIL REGISTRATIONS <---
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueRepository, Library_Management_System.NewModule.Repositories.IssueRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueService, Library_Management_System.NewModule.Services.IssueService>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueDetailRepository, Library_Management_System.NewModule.Repositories.IssueDetailRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueDetailService, Library_Management_System.NewModule.Services.IssueDetailService>();
 
 // 3. Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -125,5 +121,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

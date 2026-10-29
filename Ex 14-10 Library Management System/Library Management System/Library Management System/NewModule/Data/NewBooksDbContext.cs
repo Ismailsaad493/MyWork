@@ -24,6 +24,8 @@ namespace Library_Management_System.NewModule.Data
         public DbSet<BookCopy> BookCopies { get; set; }
         public DbSet<DepartmentMaster> Departments { get; set; }
         public DbSet<StudentMaster> Students { get; set; }
+        public DbSet<IssueMaster> IssueMasters { get; set; }
+        public DbSet<IssueDetailMaster> IssueDetails { get; set; }
 
         // ========================================================
         // AUTOMATED AUDITING & SOFT DELETE LOGIC
@@ -74,8 +76,64 @@ namespace Library_Management_System.NewModule.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // ========================================================
+            // SEQUENCES
+            // ========================================================
             modelBuilder.HasSequence<int>("DepartmentSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("StudentSeq").StartsAt(1).IncrementsBy(1);
+            modelBuilder.HasSequence<int>("IssueSeq").StartsAt(1).IncrementsBy(1);
+
+            // ========================================================
+            // ISSUE MANAGEMENT MAPPINGS
+            // ========================================================
+
+            // 1. IssueMaster Mapping
+            modelBuilder.Entity<IssueMaster>().ToTable("issue-master");
+            modelBuilder.Entity<IssueMaster>().HasKey(i => i.IssueId);
+
+            modelBuilder.Entity<IssueMaster>().Property(i => i.IssueId)
+                .HasColumnName("issue_id")
+                .HasDefaultValueSql("CONCAT('i', NEXT VALUE FOR IssueSeq)")
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<IssueMaster>().Property(i => i.SId).HasColumnName("s_id").IsRequired();
+            modelBuilder.Entity<IssueMaster>().Property(i => i.IssueDate).HasColumnName("issue_date").IsRequired();
+            modelBuilder.Entity<IssueMaster>().Property(i => i.Status).HasColumnName("status").IsRequired();
+
+            // Foreign Key from Issue to Student
+            modelBuilder.Entity<IssueMaster>()
+                .HasOne<StudentMaster>()
+                .WithMany()
+                .HasForeignKey(i => i.SId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 2. IssueDetailMaster Mapping
+            modelBuilder.Entity<IssueDetailMaster>().ToTable("issue-detail-master");
+            modelBuilder.Entity<IssueDetailMaster>().HasKey(id => id.IssueDetailId);
+
+            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.IssueDetailId)
+                .HasColumnName("issue_detail_id")
+                .UseIdentityColumn(3001, 1); // Auto-increments starting at 3001
+
+            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.IssueId).HasColumnName("issue_id").IsRequired();
+            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.BookCopyId).HasColumnName("book_copy_id").IsRequired();
+            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.DueDate).HasColumnName("due_date").IsRequired();
+            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.Status).HasColumnName("status").IsRequired();
+
+            // Foreign Key from IssueDetail to IssueMaster
+            modelBuilder.Entity<IssueDetailMaster>()
+                .HasOne(id => id.Issue)
+                .WithMany()
+                .HasForeignKey(id => id.IssueId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Foreign Key from IssueDetail to BookCopy
+            modelBuilder.Entity<IssueDetailMaster>()
+                .HasOne(id => id.BookCopy)
+                .WithMany()
+                .HasForeignKey(id => id.BookCopyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             // ========================================================
             // STUDENT MANAGEMENT MAPPINGS
@@ -131,6 +189,7 @@ namespace Library_Management_System.NewModule.Data
                 .HasColumnName("p_id")
                 .UseIdentityColumn(1, 1); // AUTO-INCREMENT 1, 2, 3...
             modelBuilder.Entity<PublisherMaster>().Property(p => p.PName).HasColumnName("p_name").IsRequired();
+
             // 3. books-master Table Mapping
             modelBuilder.Entity<BookMaster>().ToTable("books-master");
             modelBuilder.Entity<BookMaster>().HasKey(b => b.BookId);
@@ -142,6 +201,7 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<BookMaster>().Property(b => b.PId).HasColumnName("p_id");
             modelBuilder.Entity<BookMaster>().Property(b => b.Isbn).HasColumnName("isbn");
             modelBuilder.Entity<BookMaster>().HasIndex(b => b.Isbn).IsUnique().HasFilter("[isbn] IS NOT NULL");
+
             // 4. Bookscopies Table Mapping
             modelBuilder.Entity<BookCopy>().ToTable("Bookscopies");
             modelBuilder.Entity<BookCopy>().HasKey(bc => bc.BookCopyId);
