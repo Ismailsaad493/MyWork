@@ -30,6 +30,10 @@ namespace Library_Management_System.Migrations.NewBooksDb
 
             modelBuilder.HasSequence<int>("IssueSeq");
 
+            modelBuilder.HasSequence<int>("PaymentDetailSeq");
+
+            modelBuilder.HasSequence<int>("PaymentSeq");
+
             modelBuilder.HasSequence<int>("ReturnDetailSeq");
 
             modelBuilder.HasSequence<int>("ReturnSeq");
@@ -455,6 +459,118 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.ToTable("issue-master", (string)null);
                 });
 
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.PaymentDetailMaster", b =>
+                {
+                    b.Property<string>("PaymentDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("payment_detail_id")
+                        .HasDefaultValueSql("CONCAT('PD', NEXT VALUE FOR PaymentDetailSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("FineId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("fine_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<decimal>("PaidAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("paid_amount");
+
+                    b.Property<string>("PaymentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("payment_id");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("PaymentDetailId");
+
+                    b.HasIndex("FineId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.ToTable("payment-detail-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.PaymentMaster", b =>
+                {
+                    b.Property<string>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("payment_id")
+                        .HasDefaultValueSql("CONCAT('P', NEXT VALUE FOR PaymentSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("payment_date");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<string>("SId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("s_id");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("total_amount");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("SId");
+
+                    b.ToTable("payment-master", (string)null);
+                });
+
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.PublisherMaster", b =>
                 {
                     b.Property<int>("PId")
@@ -728,6 +844,36 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasForeignKey("SId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.PaymentDetailMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.FineMaster", "Fine")
+                        .WithMany()
+                        .HasForeignKey("FineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Library_Management_System.NewModule.Entities.PaymentMaster", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fine");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.PaymentMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.StudentMaster", "Student")
+                        .WithMany()
+                        .HasForeignKey("SId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.ReturnDetailMaster", b =>

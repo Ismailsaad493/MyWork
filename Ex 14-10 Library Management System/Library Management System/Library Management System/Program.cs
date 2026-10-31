@@ -73,6 +73,13 @@ builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFin
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineMasterService, Library_Management_System.NewModule.Services.FineMasterService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineDetailMasterRepository, Library_Management_System.NewModule.Repositories.FineDetailMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineDetailMasterService, Library_Management_System.NewModule.Services.FineDetailMasterService>();
+
+// ---> ADDED PAYMENT & PAYMENT DETAIL REGISTRATIONS <---
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentMasterRepository, Library_Management_System.NewModule.Repositories.PaymentMasterRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentMasterService, Library_Management_System.NewModule.Services.PaymentMasterService>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentDetailMasterRepository, Library_Management_System.NewModule.Repositories.PaymentDetailMasterRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentDetailMasterService, Library_Management_System.NewModule.Services.PaymentDetailMasterService>();
+
 // 3. Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
