@@ -24,6 +24,10 @@ namespace Library_Management_System.Migrations.NewBooksDb
 
             modelBuilder.HasSequence<int>("DepartmentSeq");
 
+            modelBuilder.HasSequence<int>("FineDetailSeq");
+
+            modelBuilder.HasSequence<int>("FineSeq");
+
             modelBuilder.HasSequence<int>("IssueSeq");
 
             modelBuilder.HasSequence<int>("ReturnDetailSeq");
@@ -227,6 +231,115 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.HasKey("DId");
 
                     b.ToTable("department-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.FineDetailMaster", b =>
+                {
+                    b.Property<string>("FineDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("fine_detail_id")
+                        .HasDefaultValueSql("CONCAT('FD', NEXT VALUE FOR FineDetailSeq)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("ChargeType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("charge_type");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("FineId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("fine_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("FineDetailId");
+
+                    b.HasIndex("FineId");
+
+                    b.ToTable("fine-detail-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.FineMaster", b =>
+                {
+                    b.Property<string>("FineId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("fine_id")
+                        .HasDefaultValueSql("CONCAT('F', NEXT VALUE FOR FineSeq)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<decimal>("FineAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("fine_amount");
+
+                    b.Property<DateTime>("FineDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("fine_date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("IssueDetailId")
+                        .HasColumnType("int")
+                        .HasColumnName("issue_detail_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("status");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("FineId");
+
+                    b.HasIndex("IssueDetailId");
+
+                    b.ToTable("fine-master", (string)null);
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.IssueDetailMaster", b =>
@@ -565,6 +678,28 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.Navigation("Category");
 
                     b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.FineDetailMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.FineMaster", "Fine")
+                        .WithMany()
+                        .HasForeignKey("FineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fine");
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.FineMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.IssueDetailMaster", "IssueDetail")
+                        .WithMany()
+                        .HasForeignKey("IssueDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("IssueDetail");
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.IssueDetailMaster", b =>

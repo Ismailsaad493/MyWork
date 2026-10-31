@@ -67,6 +67,12 @@ builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueSe
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueDetailRepository, Library_Management_System.NewModule.Repositories.IssueDetailRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueDetailService, Library_Management_System.NewModule.Services.IssueDetailService>();
 
+
+// ---> ADDED FINE & FINE DETAIL REGISTRATIONS <---
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineMasterRepository, Library_Management_System.NewModule.Repositories.FineMasterRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineMasterService, Library_Management_System.NewModule.Services.FineMasterService>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineDetailMasterRepository, Library_Management_System.NewModule.Repositories.FineDetailMasterRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineDetailMasterService, Library_Management_System.NewModule.Services.FineDetailMasterService>();
 // 3. Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
