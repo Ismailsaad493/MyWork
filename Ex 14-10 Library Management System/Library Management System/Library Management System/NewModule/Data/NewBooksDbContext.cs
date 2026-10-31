@@ -30,14 +30,12 @@ namespace Library_Management_System.NewModule.Data
         public DbSet<ReturnDetailMaster> ReturnDetails { get; set; }
         public DbSet<FineMaster> FineMasters { get; set; }
         public DbSet<FineDetailMaster> FineDetails { get; set; }
-
-        // ADDED: New Payment Tables
         public DbSet<PaymentMaster> PaymentMasters { get; set; }
         public DbSet<PaymentDetailMaster> PaymentDetails { get; set; }
 
-        // ========================================================
-        // AUTOMATED AUDITING & SOFT DELETE LOGIC
-        // ========================================================
+        // ADDED: Book Availability Table
+        public DbSet<BookAvailabilityMaster> BookAvailabilities { get; set; }
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var username = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Name)?.Value ?? "System";
@@ -81,9 +79,6 @@ namespace Library_Management_System.NewModule.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ========================================================
-            // SEQUENCES
-            // ========================================================
             modelBuilder.HasSequence<int>("DepartmentSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("StudentSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("IssueSeq").StartsAt(1).IncrementsBy(1);
@@ -91,62 +86,72 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.HasSequence<int>("ReturnDetailSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("FineSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("FineDetailSeq").StartsAt(1).IncrementsBy(1);
-
-            // ADDED: Payment Sequences
             modelBuilder.HasSequence<int>("PaymentSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("PaymentDetailSeq").StartsAt(1).IncrementsBy(1);
+
+            // ADDED: Availability Sequence
+            modelBuilder.HasSequence<int>("BookAvailabilitySeq").StartsAt(1).IncrementsBy(1);
+
+            // ========================================================
+            // BOOK AVAILABILITY MAPPING
+            // ========================================================
+            modelBuilder.Entity<BookAvailabilityMaster>().ToTable("book-availability-master");
+            modelBuilder.Entity<BookAvailabilityMaster>().HasKey(ba => ba.AvailabilityId);
+            modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.AvailabilityId)
+                .HasColumnName("availability_id")
+                .HasDefaultValueSql("CONCAT('BA', NEXT VALUE FOR BookAvailabilitySeq)")
+                .ValueGeneratedOnAdd();
+            modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.BookId).HasColumnName("book_id").IsRequired();
+            modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.Title).HasColumnName("title").IsRequired();
+            modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.TotalCopies).HasColumnName("total_copies").IsRequired();
+            modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.AvailableCopies).HasColumnName("available_copies").IsRequired();
+            modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.IssuedCopies).HasColumnName("issued_copies").IsRequired();
+
+            modelBuilder.Entity<BookAvailabilityMaster>()
+                .HasOne(ba => ba.Book)
+                .WithMany()
+                .HasForeignKey(ba => ba.BookId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // ========================================================
             // PAYMENT MANAGEMENT MAPPINGS
             // ========================================================
-
-            // 1. PaymentMaster Mapping
             modelBuilder.Entity<PaymentMaster>().ToTable("payment-master");
             modelBuilder.Entity<PaymentMaster>().HasKey(p => p.PaymentId);
-
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentId)
                 .HasColumnName("payment_id")
                 .HasDefaultValueSql("CONCAT('P', NEXT VALUE FOR PaymentSeq)")
                 .ValueGeneratedOnAdd();
-
             modelBuilder.Entity<PaymentMaster>().Property(p => p.SId).HasColumnName("s_id").IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentDate).HasColumnName("payment_date").IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentMethod).HasColumnName("payment_method").IsRequired();
-
             modelBuilder.Entity<PaymentMaster>().Property(p => p.TotalAmount)
                 .HasColumnName("total_amount")
                 .HasColumnType("decimal(18,2)")
                 .IsRequired();
-
             modelBuilder.Entity<PaymentMaster>()
                 .HasOne(p => p.Student)
                 .WithMany()
                 .HasForeignKey(p => p.SId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 2. PaymentDetailMaster Mapping
             modelBuilder.Entity<PaymentDetailMaster>().ToTable("payment-detail-master");
             modelBuilder.Entity<PaymentDetailMaster>().HasKey(pd => pd.PaymentDetailId);
-
             modelBuilder.Entity<PaymentDetailMaster>().Property(pd => pd.PaymentDetailId)
                 .HasColumnName("payment_detail_id")
                 .HasDefaultValueSql("CONCAT('PD', NEXT VALUE FOR PaymentDetailSeq)")
                 .ValueGeneratedOnAdd();
-
             modelBuilder.Entity<PaymentDetailMaster>().Property(pd => pd.PaymentId).HasColumnName("payment_id").IsRequired();
             modelBuilder.Entity<PaymentDetailMaster>().Property(pd => pd.FineId).HasColumnName("fine_id").IsRequired();
-
             modelBuilder.Entity<PaymentDetailMaster>().Property(pd => pd.PaidAmount)
                 .HasColumnName("paid_amount")
                 .HasColumnType("decimal(18,2)")
                 .IsRequired();
-
             modelBuilder.Entity<PaymentDetailMaster>()
                 .HasOne(pd => pd.Payment)
                 .WithMany()
                 .HasForeignKey(pd => pd.PaymentId)
                 .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<PaymentDetailMaster>()
                 .HasOne(pd => pd.Fine)
                 .WithMany()

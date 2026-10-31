@@ -80,6 +80,9 @@ builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPayment
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentDetailMasterRepository, Library_Management_System.NewModule.Repositories.PaymentDetailMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentDetailMasterService, Library_Management_System.NewModule.Services.PaymentDetailMasterService>();
 
+// ---> ADDED BOOK SEARCH & AVAILABILITY REGISTRATION <---
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IBookSearchService, Library_Management_System.NewModule.Services.BookSearchService>();
+
 // 3. Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

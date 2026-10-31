@@ -22,6 +22,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("BookAvailabilitySeq");
+
             modelBuilder.HasSequence<int>("DepartmentSeq");
 
             modelBuilder.HasSequence<int>("FineDetailSeq");
@@ -39,6 +41,66 @@ namespace Library_Management_System.Migrations.NewBooksDb
             modelBuilder.HasSequence<int>("ReturnSeq");
 
             modelBuilder.HasSequence<int>("StudentSeq");
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookAvailabilityMaster", b =>
+                {
+                    b.Property<string>("AvailabilityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("availability_id")
+                        .HasDefaultValueSql("CONCAT('BA', NEXT VALUE FOR BookAvailabilitySeq)");
+
+                    b.Property<int>("AvailableCopies")
+                        .HasColumnType("int")
+                        .HasColumnName("available_copies");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int")
+                        .HasColumnName("book_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_time");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("IssuedCopies")
+                        .HasColumnType("int")
+                        .HasColumnName("issued_copies");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("title");
+
+                    b.Property<int>("TotalCopies")
+                        .HasColumnType("int")
+                        .HasColumnName("total_copies");
+
+                    b.Property<int>("UpdateCount")
+                        .HasColumnType("int")
+                        .HasColumnName("update_count");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("AvailabilityId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("book-availability-master", (string)null);
+                });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookCopy", b =>
                 {
@@ -764,6 +826,17 @@ namespace Library_Management_System.Migrations.NewBooksDb
                     b.HasIndex("DId");
 
                     b.ToTable("students-master", (string)null);
+                });
+
+            modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookAvailabilityMaster", b =>
+                {
+                    b.HasOne("Library_Management_System.NewModule.Entities.BookMaster", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("Library_Management_System.NewModule.Entities.BookCopy", b =>
