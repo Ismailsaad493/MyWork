@@ -34,7 +34,7 @@ namespace Library_Management_System.NewModule.Services
             {
                 SId = dto.SId,
                 PaymentMethod = dto.PaymentMethod,
-                TotalAmount = dto.TotalAmount,
+                TotalAmount = 0, // Auto-calculates when Detail is created
                 PaymentDate = DateTime.UtcNow
             };
             return await _repo.AddAsync(payment);
@@ -47,7 +47,6 @@ namespace Library_Management_System.NewModule.Services
 
             existing.SId = dto.SId;
             existing.PaymentMethod = dto.PaymentMethod;
-            existing.TotalAmount = dto.TotalAmount;
 
             await _repo.UpdateAsync(existing);
             return true;

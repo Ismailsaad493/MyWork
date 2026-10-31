@@ -17,10 +17,20 @@ namespace Library_Management_System.NewModule.Services
     public class FineMasterService : IFineMasterService
     {
         private readonly IFineMasterRepository _repo;
+        private readonly IFineDetailMasterRepository _fineDetailRepo;
+        private readonly IPaymentDetailMasterRepository _paymentDetailRepo;
+        private readonly IPaymentMasterRepository _paymentRepo;
 
-        public FineMasterService(IFineMasterRepository repo)
+        public FineMasterService(
+            IFineMasterRepository repo,
+            IFineDetailMasterRepository fineDetailRepo,
+            IPaymentDetailMasterRepository paymentDetailRepo,
+            IPaymentMasterRepository paymentRepo)
         {
             _repo = repo;
+            _fineDetailRepo = fineDetailRepo;
+            _paymentDetailRepo = paymentDetailRepo;
+            _paymentRepo = paymentRepo;
         }
 
         public async Task<IEnumerable<FineMaster>> GetAllFinesAsync()
@@ -46,10 +56,39 @@ namespace Library_Management_System.NewModule.Services
             if (existing == null) return false;
 
             existing.IssueDetailId = dto.IssueDetailId;
-            existing.FineAmount = dto.FineAmount;
             existing.Status = dto.Status;
 
+            bool amountChanged = existing.FineAmount != dto.FineAmount;
+            existing.FineAmount = dto.FineAmount;
+
             await _repo.UpdateAsync(existing);
+
+            if (amountChanged)
+            {
+                // Cascade update to Fine Detail Master
+                var fineDetails = await _fineDetailRepo.GetByFineIdAsync(id);
+                foreach (var fd in fineDetails)
+                {
+                    fd.Amount = dto.FineAmount;
+                    await _fineDetailRepo.UpdateAsync(fd);
+                }
+
+                // Cascade update to Payment Detail Master and Payment Master
+                var paymentDetails = await _paymentDetailRepo.GetByFineIdAsync(id);
+                foreach (var pd in paymentDetails)
+                {
+                    pd.PaidAmount = dto.FineAmount;
+                    await _paymentDetailRepo.UpdateAsync(pd);
+
+                    var payment = await _paymentRepo.GetByIdAsync(pd.PaymentId);
+                    if (payment != null)
+                    {
+                        payment.TotalAmount = dto.FineAmount;
+                        await _paymentRepo.UpdateAsync(payment);
+                    }
+                }
+            }
+
             return true;
         }
     }

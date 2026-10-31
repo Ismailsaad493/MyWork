@@ -2,6 +2,7 @@
 using Library_Management_System.NewModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Repositories
@@ -10,6 +11,7 @@ namespace Library_Management_System.NewModule.Repositories
     {
         Task<IEnumerable<PaymentDetailMaster>> GetAllAsync();
         Task<PaymentDetailMaster?> GetByIdAsync(string id);
+        Task<IEnumerable<PaymentDetailMaster>> GetByFineIdAsync(string fineId);
         Task<PaymentDetailMaster> AddAsync(PaymentDetailMaster paymentDetail);
         Task UpdateAsync(PaymentDetailMaster paymentDetail);
     }
@@ -31,6 +33,11 @@ namespace Library_Management_System.NewModule.Repositories
         public async Task<PaymentDetailMaster?> GetByIdAsync(string id)
         {
             return await _context.PaymentDetails.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<PaymentDetailMaster>> GetByFineIdAsync(string fineId)
+        {
+            return await _context.PaymentDetails.Where(pd => pd.FineId == fineId).ToListAsync();
         }
 
         public async Task<PaymentDetailMaster> AddAsync(PaymentDetailMaster paymentDetail)
