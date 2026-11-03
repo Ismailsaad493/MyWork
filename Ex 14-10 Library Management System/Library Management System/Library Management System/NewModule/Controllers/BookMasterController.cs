@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Library_Management_System.NewModule.Controllers
 {
     [ApiController]
-    [Route("api/new-books-module/books")]
+    [Route("api/new-books-module/book-master")]
     public class BookMasterController : ControllerBase
     {
         private readonly IBookMasterService _service;
@@ -20,8 +20,14 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var books = await _service.GetAllBooksAsync();
-            return Ok(books);
+            try
+            {
+                return Ok(await _service.GetAllBooksAsync());
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
 
         [HttpPost]
@@ -30,11 +36,15 @@ namespace Library_Management_System.NewModule.Controllers
             try
             {
                 var result = await _service.CreateBookAsync(dto);
-                return CreatedAtAction(nameof(GetAll), new { id = result.BookId }, result);
+                if (result == null)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+                return Ok(result);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { Message = "An error occurred while processing your request." });
             }
         }
 
@@ -44,13 +54,16 @@ namespace Library_Management_System.NewModule.Controllers
             try
             {
                 var success = await _service.UpdateBookAsync(id, dto);
-                if (!success) return NotFound($"Book with ID {id} not found.");
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
 
                 return NoContent();
             }
-            catch (InvalidOperationException ex)
+            catch (Exception)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { Message = "An error occurred while processing your request." });
             }
         }
     }

@@ -29,10 +29,9 @@ namespace Library_Management_System.NewModule.Services
                 {
                     BookId = b.BookId,
                     Title = b.Title,
-                    TotalCopies = b.Copies.Count(),
-                    // Assuming your BookCopy status strings are "Available" and "Issued"
-                    AvailableCopies = b.Copies.Count(c => c.Status.ToLower() == "available"),
-                    IssuedCopies = b.Copies.Count(c => c.Status.ToLower() == "issued")
+                    TotalCopies = b.Copies!.Count(),
+                    AvailableCopies = b.Copies!.Count(c => c.Status.ToLower() == "available"),
+                    IssuedCopies = b.Copies!.Count(c => c.Status.ToLower() == "issued")
                 })
                 .ToListAsync();
         }
@@ -45,9 +44,9 @@ namespace Library_Management_System.NewModule.Services
                 {
                     BookId = b.BookId,
                     Title = b.Title,
-                    TotalCopies = b.Copies.Count(),
-                    AvailableCopies = b.Copies.Count(c => c.Status.ToLower() == "available"),
-                    IssuedCopies = b.Copies.Count(c => c.Status.ToLower() == "issued")
+                    TotalCopies = b.Copies!.Count(),
+                    AvailableCopies = b.Copies!.Count(c => c.Status.ToLower() == "available"),
+                    IssuedCopies = b.Copies!.Count(c => c.Status.ToLower() == "issued")
                 })
                 .ToListAsync();
         }

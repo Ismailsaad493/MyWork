@@ -133,7 +133,7 @@ namespace Library_Management_System.Service
                     // FIXED: Reaches into the linked Role table to grab the text name (e.g., "Admin")
                     new Claim(ClaimTypes.Role, user.Role != null ? user.Role.Name : "")
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddMinutes(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"]

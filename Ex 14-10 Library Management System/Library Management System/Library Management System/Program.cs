@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,30 +51,24 @@ builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IReturnRepository, Library_Management_System.NewModule.Repositories.ReturnRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnService, Library_Management_System.NewModule.Services.ReturnService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IReturnDetailRepository, Library_Management_System.NewModule.Repositories.ReturnDetailRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnDetailService, Library_Management_System.NewModule.Services.ReturnDetailService>();
-
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IStudentRepository, Library_Management_System.NewModule.Repositories.StudentRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IStudentService, Library_Management_System.NewModule.Services.StudentService>();
-
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueRepository, Library_Management_System.NewModule.Repositories.IssueRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueService, Library_Management_System.NewModule.Services.IssueService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueDetailRepository, Library_Management_System.NewModule.Repositories.IssueDetailRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueDetailService, Library_Management_System.NewModule.Services.IssueDetailService>();
-
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineMasterRepository, Library_Management_System.NewModule.Repositories.FineMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineMasterService, Library_Management_System.NewModule.Services.FineMasterService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineDetailMasterRepository, Library_Management_System.NewModule.Repositories.FineDetailMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineDetailMasterService, Library_Management_System.NewModule.Services.FineDetailMasterService>();
-
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentMasterRepository, Library_Management_System.NewModule.Repositories.PaymentMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentMasterService, Library_Management_System.NewModule.Services.PaymentMasterService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentDetailMasterRepository, Library_Management_System.NewModule.Repositories.PaymentDetailMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentDetailMasterService, Library_Management_System.NewModule.Services.PaymentDetailMasterService>();
-
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IBookSearchService, Library_Management_System.NewModule.Services.BookSearchService>();
 
 // ==========================================================
@@ -90,7 +85,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+
+            // Forces exact expiration without the default 5-minute grace period
+            ClockSkew = TimeSpan.Zero
         };
     });
 
@@ -129,7 +127,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

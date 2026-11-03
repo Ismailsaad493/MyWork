@@ -14,6 +14,7 @@ namespace Library_Management_System.NewModule.Repositories
         // NEW: For Update
         Task<CategoryMaster?> GetByIdAsync(int id);
         Task UpdateAsync(CategoryMaster category);
+        Task DeleteAsync(CategoryMaster category); // Use your exact entity name if it's different
     }
 
 }

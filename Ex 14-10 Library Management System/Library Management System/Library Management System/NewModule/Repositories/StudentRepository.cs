@@ -12,6 +12,7 @@ namespace Library_Management_System.NewModule.Repositories
         Task<StudentMaster?> GetByIdAsync(string id);
         Task<StudentMaster> AddAsync(StudentMaster student);
         Task UpdateAsync(StudentMaster student);
+        Task DeleteAsync(StudentMaster student);
     }
 
     public class StudentRepository : IStudentRepository
@@ -38,6 +39,13 @@ namespace Library_Management_System.NewModule.Repositories
         public async Task UpdateAsync(StudentMaster student)
         {
             _context.Students.Update(student);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(StudentMaster student)
+        {
+            // Your DbContext automatically converts this Remove action into an UPDATE IsActive = false
+            _context.Students.Remove(student);
             await _context.SaveChangesAsync();
         }
     }

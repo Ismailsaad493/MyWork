@@ -1,6 +1,7 @@
 ﻿using Library_Management_System.NewModule.Dtos;
 using Library_Management_System.NewModule.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Controllers
@@ -19,24 +20,52 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var copies = await _service.GetAllCopiesAsync();
-            return Ok(copies);
+            try
+            {
+                var copies = await _service.GetAllCopiesAsync();
+                return Ok(copies);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(int bookId, [FromBody] BookCopyUpdateDto dto)
         {
-            var result = await _service.CreateCopyAsync(bookId, dto.Status);
-            return CreatedAtAction(nameof(GetAll), new { id = result.BookCopyId }, result);
+            try
+            {
+                var result = await _service.CreateCopyAsync(bookId, dto.Status);
+                if (result == null)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+                return CreatedAtAction(nameof(GetAll), new { id = result.BookCopyId }, result);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] BookCopyUpdateDto dto)
         {
-            var success = await _service.UpdateCopyAsync(id, dto);
-            if (!success) return NotFound($"Book Copy with ID {id} not found.");
+            try
+            {
+                var success = await _service.UpdateCopyAsync(id, dto);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
     }
 }

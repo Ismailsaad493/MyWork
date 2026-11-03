@@ -11,6 +11,7 @@ namespace Library_Management_System.NewModule.Services
         Task<IEnumerable<StudentMaster>> GetAllStudentsAsync();
         Task<StudentMaster> CreateStudentAsync(StudentUpdateDto dto);
         Task<bool> UpdateStudentAsync(string id, StudentUpdateDto dto);
+        Task<bool> DeleteStudentAsync(string sId);
     }
 
     public class StudentService : IStudentService
@@ -39,6 +40,15 @@ namespace Library_Management_System.NewModule.Services
             existing.DId = dto.DId;
 
             await _repo.UpdateAsync(existing);
+            return true;
+        }
+
+        public async Task<bool> DeleteStudentAsync(string sId)
+        {
+            var student = await _repo.GetByIdAsync(sId);
+            if (student == null) return false;
+
+            await _repo.DeleteAsync(student);
             return true;
         }
     }

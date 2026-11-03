@@ -32,10 +32,39 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] StudentUpdateDto dto)
         {
-            var success = await _service.UpdateStudentAsync(id, dto);
-            if (!success) return NotFound($"Student with ID {id} not found.");
+            try
+            {
+                var success = await _service.UpdateStudentAsync(id, dto);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
 
-            return NoContent();
+                return NoContent(); // Or Ok(new { Message = "Updated successfully" }) depending on your preference
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
+        }
+
+        [HttpDelete("{sId}")]
+        public async Task<IActionResult> DeleteStudent(string sId)
+        {
+            try
+            {
+                var success = await _service.DeleteStudentAsync(sId);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+
+                return Ok(new { Message = "Student status successfully changed to Inactive (false)." });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
     }
 }

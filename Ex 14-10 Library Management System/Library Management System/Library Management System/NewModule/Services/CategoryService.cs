@@ -16,6 +16,7 @@ namespace Library_Management_System.NewModule.Services
 
         // FIXED: This line resolves the red squiggly error in your controller
         Task<bool> UpdateCategoryAsync(int id, CategoryUpdateDto dto);
+        Task<bool> DeleteCategoryAsync(int id);
     }
 
     // ==========================================
@@ -57,6 +58,14 @@ namespace Library_Management_System.NewModule.Services
             // 3. Save the changes to the database
             await _repo.UpdateAsync(existingCategory);
 
+            return true;
+        }
+        public async Task<bool> DeleteCategoryAsync(int id)
+        {
+            var category = await _repo.GetByIdAsync(id); // Use your actual get method name
+            if (category == null) return false;
+
+            await _repo.DeleteAsync(category);
             return true;
         }
     }

@@ -31,5 +31,11 @@ namespace Library_Management_System.NewModule.Repositories
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(CategoryMaster category)
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+        }
     }
 }
