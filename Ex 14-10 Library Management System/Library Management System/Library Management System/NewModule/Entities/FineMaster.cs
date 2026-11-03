@@ -11,8 +11,7 @@ namespace Library_Management_System.NewModule.Entities
         public int IssueDetailId { get; set; }
         public IssueDetailMaster IssueDetail { get; set; } = null!;
 
-        public DateTime FineDate { get; set; } = DateTime.UtcNow;
-        public decimal FineAmount { get; set; }
+        public DateOnly FineDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow); public decimal FineAmount { get; set; }
 
         public string Status { get; set; } = null!; // "paid" or "unpaid"
     }

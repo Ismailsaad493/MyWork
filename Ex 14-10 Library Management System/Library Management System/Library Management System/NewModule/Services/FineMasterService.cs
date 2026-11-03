@@ -45,7 +45,7 @@ namespace Library_Management_System.NewModule.Services
                 IssueDetailId = dto.IssueDetailId,
                 FineAmount = dto.FineAmount,
                 Status = dto.Status,
-                FineDate = DateTime.UtcNow
+                FineDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             return await _repo.AddAsync(fine);
         }

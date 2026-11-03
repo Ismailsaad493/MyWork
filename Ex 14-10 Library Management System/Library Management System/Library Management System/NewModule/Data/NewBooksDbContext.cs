@@ -32,8 +32,6 @@ namespace Library_Management_System.NewModule.Data
         public DbSet<FineDetailMaster> FineDetails { get; set; }
         public DbSet<PaymentMaster> PaymentMasters { get; set; }
         public DbSet<PaymentDetailMaster> PaymentDetails { get; set; }
-
-        // ADDED: Book Availability Table
         public DbSet<BookAvailabilityMaster> BookAvailabilities { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -46,7 +44,11 @@ namespace Library_Management_System.NewModule.Data
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedBy = username;
-                    entry.Entity.UpdatedBy = username;
+
+                    // FIXED: Explicitly force Update fields to null for ALL new records
+                    entry.Entity.UpdatedBy = null;
+                    entry.Entity.UpdatedAt = null;
+
                     entry.Entity.CreatedAt = DateTime.UtcNow;
                     entry.Entity.UpdateCount = 0;
                     entry.Entity.IsActive = true;
@@ -65,6 +67,7 @@ namespace Library_Management_System.NewModule.Data
                     entry.State = EntityState.Modified;
                     entry.Property(e => e.CreatedBy).IsModified = false;
                     entry.Property(e => e.CreatedAt).IsModified = false;
+
                     entry.Entity.UpdatedBy = username;
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
                     entry.Entity.UpdateCount++;
@@ -88,8 +91,6 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.HasSequence<int>("FineDetailSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("PaymentSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("PaymentDetailSeq").StartsAt(1).IncrementsBy(1);
-
-            // ADDED: Availability Sequence
             modelBuilder.HasSequence<int>("BookAvailabilitySeq").StartsAt(1).IncrementsBy(1);
 
             // ========================================================

@@ -21,13 +21,26 @@ namespace Library_Management_System.NewModule.Controllers
             var result = await _service.CreateDepartmentAsync(dto);
             return CreatedAtAction(nameof(GetAll), new { id = result.DId }, result);
         }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] DepartmentUpdateDto dto)
         {
-            var success = await _service.UpdateDepartmentAsync(id, dto);
-            if (!success) return NotFound($"Department with ID {id} not found.");
-            return NoContent();
+            try
+            {
+                var result = await _service.UpdateDepartmentAsync(id, dto);
+
+                // If the service returns null, the ID was not found
+                if (result == null)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+
+                // Returns a 200 OK with the full updated database record as the response body
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
     }
 }

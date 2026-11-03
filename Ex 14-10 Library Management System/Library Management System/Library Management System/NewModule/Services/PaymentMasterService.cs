@@ -35,7 +35,7 @@ namespace Library_Management_System.NewModule.Services
                 SId = dto.SId,
                 PaymentMethod = dto.PaymentMethod,
                 TotalAmount = 0, // Auto-calculates when Detail is created
-                PaymentDate = DateTime.UtcNow
+                PaymentDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
             return await _repo.AddAsync(payment);
         }

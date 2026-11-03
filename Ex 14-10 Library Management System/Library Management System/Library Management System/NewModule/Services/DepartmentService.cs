@@ -10,7 +10,7 @@ namespace Library_Management_System.NewModule.Services
     {
         Task<IEnumerable<DepartmentMaster>> GetAllDepartmentsAsync();
         Task<DepartmentMaster> CreateDepartmentAsync(DepartmentUpdateDto dto);
-        Task<bool> UpdateDepartmentAsync(string id, DepartmentUpdateDto dto);
+        Task<DepartmentMaster?> UpdateDepartmentAsync(string id, DepartmentUpdateDto dto);
     }
 
     public class DepartmentService : IDepartmentService
@@ -25,15 +25,16 @@ namespace Library_Management_System.NewModule.Services
             var dept = new DepartmentMaster { DName = dto.DName };
             return await _repo.AddAsync(dept);
         }
-
-        public async Task<bool> UpdateDepartmentAsync(string id, DepartmentUpdateDto dto)
+        public async Task<DepartmentMaster?> UpdateDepartmentAsync(string id, DepartmentUpdateDto dto)
         {
-            var existing = await _repo.GetByIdAsync(id);
-            if (existing == null) return false;
+            var existingDepartment = await _repo.GetByIdAsync(id);
+            if (existingDepartment == null) return null;
 
-            existing.DName = dto.DName;
-            await _repo.UpdateAsync(existing);
-            return true;
+            existingDepartment.DName = dto.DName;
+
+            await _repo.UpdateAsync(existingDepartment);
+
+            return existingDepartment;
         }
     }
 }

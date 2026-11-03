@@ -6,22 +6,14 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
-    // ==========================================
-    // 1. THE INTERFACE (Contract)
-    // ==========================================
     public interface ICategoryService
     {
-        Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync();
+        Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync(int pageNumber);
         Task<CategoryMaster> CreateCategoryAsync(CategoryCreateDto dto);
-
-        // FIXED: This line resolves the red squiggly error in your controller
         Task<bool> UpdateCategoryAsync(int id, CategoryUpdateDto dto);
         Task<bool> DeleteCategoryAsync(int id);
     }
 
-    // ==========================================
-    // 2. THE IMPLEMENTATION
-    // ==========================================
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _repo;
@@ -31,9 +23,11 @@ namespace Library_Management_System.NewModule.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync()
+        // Pagination implemented here: exactly 10 items per page
+        public async Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync(int pageNumber)
         {
-            return await _repo.GetAllAsync();
+            int pageSize = 10;
+            return await _repo.GetAllAsync(pageNumber, pageSize);
         }
 
         public async Task<CategoryMaster> CreateCategoryAsync(CategoryCreateDto dto)
@@ -48,21 +42,17 @@ namespace Library_Management_System.NewModule.Services
 
         public async Task<bool> UpdateCategoryAsync(int id, CategoryUpdateDto dto)
         {
-            // 1. Fetch the existing record from the database
             var existingCategory = await _repo.GetByIdAsync(id);
             if (existingCategory == null) return false;
 
-            // 2. Apply the new values from the DTO
             existingCategory.CName = dto.CName;
-
-            // 3. Save the changes to the database
             await _repo.UpdateAsync(existingCategory);
-
             return true;
         }
+
         public async Task<bool> DeleteCategoryAsync(int id)
         {
-            var category = await _repo.GetByIdAsync(id); // Use your actual get method name
+            var category = await _repo.GetByIdAsync(id);
             if (category == null) return false;
 
             await _repo.DeleteAsync(category);

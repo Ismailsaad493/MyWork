@@ -12,13 +12,13 @@ namespace Library_Management_System.NewModule.Controllers
     {
         private readonly ICategoryService _service;
         public CategoryMasterController(ICategoryService service) => _service = service;
-
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1)
         {
             try
             {
-                return Ok(await _service.GetAllCategoriesAsync());
+                var categories = await _service.GetAllCategoriesAsync(pageNumber);
+                return Ok(categories);
             }
             catch (Exception)
             {

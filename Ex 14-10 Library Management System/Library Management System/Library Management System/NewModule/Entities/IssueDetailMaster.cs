@@ -15,7 +15,7 @@ namespace Library_Management_System.NewModule.Entities
         public int BookCopyId { get; set; }
         public BookCopy BookCopy { get; set; } = null!;
 
-        public DateTime DueDate { get; set; }
+        public DateOnly DueDate { get; set; }
         public string Status { get; set; } = null!; // "issued" or "available"
     }
 }

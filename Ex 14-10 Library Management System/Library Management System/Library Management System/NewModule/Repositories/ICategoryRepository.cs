@@ -8,7 +8,7 @@ namespace Library_Management_System.NewModule.Repositories
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<CategoryMaster>> GetAllAsync();
+        Task<IEnumerable<CategoryMaster>> GetAllAsync(int pageNumber, int pageSize);
         Task<CategoryMaster> AddAsync(CategoryMaster category);
 
         // NEW: For Update

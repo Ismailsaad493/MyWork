@@ -11,7 +11,7 @@ namespace Library_Management_System.NewModule.Entities
         public string SId { get; set; } = null!;
         public StudentMaster Student { get; set; } = null!;
 
-        public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
+        public DateOnly PaymentDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
         public string PaymentMethod { get; set; } = null!; // "cash", "upi", or "banking"
         public decimal TotalAmount { get; set; }
     }

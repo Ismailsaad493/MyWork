@@ -2,6 +2,7 @@
 using Library_Management_System.NewModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Repositories
@@ -34,8 +35,18 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task DeleteAsync(CategoryMaster category)
         {
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            // This forces a direct SQL DELETE, ignoring any soft-delete interceptors
+            await _context.Categories
+                .Where(c => c.CId == category.CId)
+                .ExecuteDeleteAsync();
+        }
+
+        public async Task<IEnumerable<CategoryMaster>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            return await _context.Categories
+                .Skip((pageNumber - 1) * pageSize) // Skips records from previous pages
+                .Take(pageSize)                    // Takes exactly the number of records for the current page
+                .ToListAsync();
         }
     }
 }

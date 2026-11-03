@@ -32,7 +32,7 @@ namespace Library_Management_System.NewModule.Services
             var issue = new IssueMaster
             {
                 SId = dto.SId,
-                IssueDate = dto.IssueDate,
+                IssueDate = DateOnly.FromDateTime(dto.IssueDate),
                 Status = dto.Status
             };
 
@@ -45,7 +45,7 @@ namespace Library_Management_System.NewModule.Services
             if (existing == null) return false;
 
             existing.SId = dto.SId;
-            existing.IssueDate = dto.IssueDate;
+            existing.IssueDate = DateOnly.FromDateTime(dto.IssueDate);
             existing.Status = dto.Status;
 
             await _repo.UpdateAsync(existing);

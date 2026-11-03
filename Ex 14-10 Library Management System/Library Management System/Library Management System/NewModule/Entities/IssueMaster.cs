@@ -10,7 +10,7 @@ namespace Library_Management_System.NewModule.Entities
 
         public string SId { get; set; } = null!; // From Student Table
 
-        public DateTime IssueDate { get; set; }
+        public DateOnly IssueDate { get; set; }
         public string Status { get; set; } = null!; // "open" or "close"
 
         // Navigation property for 1-to-Many relationship

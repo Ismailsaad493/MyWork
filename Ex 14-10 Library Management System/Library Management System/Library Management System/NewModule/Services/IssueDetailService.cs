@@ -33,7 +33,7 @@ namespace Library_Management_System.NewModule.Services
             {
                 IssueId = dto.IssueId,
                 BookCopyId = dto.BookCopyId,
-                DueDate = dto.DueDate,
+                DueDate = DateOnly.FromDateTime(dto.DueDate),
                 Status = dto.Status
             };
 
@@ -47,7 +47,7 @@ namespace Library_Management_System.NewModule.Services
 
             existing.IssueId = dto.IssueId;
             existing.BookCopyId = dto.BookCopyId;
-            existing.DueDate = dto.DueDate;
+            existing.DueDate = DateOnly.FromDateTime(dto.DueDate);
             existing.Status = dto.Status;
 
             await _repo.UpdateAsync(existing);

@@ -10,6 +10,6 @@ namespace Library_Management_System.NewModule.Entities
         // Foreign Key to StudentMaster
         public string SId { get; set; } = null!;
 
-        public DateTime ReturnDate { get; set; } = DateTime.UtcNow;
+        public DateOnly ReturnDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
     }
 }

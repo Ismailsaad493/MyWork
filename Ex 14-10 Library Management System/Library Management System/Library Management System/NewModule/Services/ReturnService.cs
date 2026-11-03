@@ -32,7 +32,7 @@ namespace Library_Management_System.NewModule.Services
             var returnMaster = new ReturnMaster
             {
                 SId = dto.SId,
-                ReturnDate = System.DateTime.UtcNow
+                ReturnDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
 
             return await _repo.AddAsync(returnMaster);
