@@ -1,4 +1,5 @@
-﻿using Library_Management_System.Entities;
+﻿using Library_Management_System.Dtos;
+using Library_Management_System.Entities;
 using Library_Management_System.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,9 +51,22 @@ namespace Library_Management_System.Controllers
         // 🔒 Requirement 1: Only an Admin with a valid JWT token can add books
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> AddBook([FromBody] Book book)
+        public async Task<IActionResult> AddBook([FromBody] BookCreateDto request)
         {
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
+
+            // Map the clean DTO into the database entity
+            var book = new Book
+            {
+                Title = request.Title,
+                AuthorId = request.AuthorId,
+                ISBN = request.Isbn,
+                Publisher = request.Publisher,
+                Quantity = request.Quantity,
+                Category = request.Category,
+                IsAvailable = request.IsAvailable
+            };
+
             await _bookService.AddBookAsync(book);
 
             return CreatedAtAction(nameof(GetBookById), new { id = book.Id }, new
@@ -65,15 +79,23 @@ namespace Library_Management_System.Controllers
         // 🔒 Requirement 1: Only an Admin can update books
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBook(int id, [FromBody] Book book)
+        public async Task<IActionResult> UpdateBook(int id, [FromBody] BookCreateDto request)
         {
-            if (id != book.Id) return BadRequest(new { Message = "ID mismatch." });
-
             var existingBook = await _bookService.GetBookByIdAsync(id);
             if (existingBook == null) return NotFound(new { Message = "Book not found." });
 
             var username = User.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown User";
-            await _bookService.UpdateBookAsync(book);
+
+            // Update the existing entity with the clean DTO fields
+            existingBook.Title = request.Title;
+            existingBook.AuthorId = request.AuthorId;
+            existingBook.ISBN = request.Isbn;
+            existingBook.Publisher = request.Publisher;
+            existingBook.Quantity = request.Quantity;
+            existingBook.Category = request.Category;
+            existingBook.IsAvailable = request.IsAvailable;
+
+            await _bookService.UpdateBookAsync(existingBook);
 
             return Ok(new { Message = $"Book ID {id} was successfully updated by {username}!" });
         }

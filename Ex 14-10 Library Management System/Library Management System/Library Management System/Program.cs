@@ -1,12 +1,9 @@
 using Library_Management_System.Data;
 using Library_Management_System.Repositories;
 using Library_Management_System.Service;
-
-// ADDED: Using statements for the new isolated module
 using Library_Management_System.NewModule.Data;
 using Library_Management_System.NewModule.Repositories;
 using Library_Management_System.NewModule.Services;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,22 +12,21 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
-// 1. Register Existing DbContext
+// 1. Register Old Module DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ADDED: Register the separate DbContext for the new module
+// 2. Register New Module DbContext
 builder.Services.AddDbContext<NewBooksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("NewBooksDbConnection")));
 
-// 2. Register Your Services (Both Repositories AND Services)
-
-// Existing Registrations
+// ==========================================================
+// OLD MODULE REGISTRATIONS
+// ==========================================================
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<Library_Management_System.Repositories.IStudentRepository, Library_Management_System.Repositories.StudentRepository>();
@@ -41,7 +37,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IBookLoanService, BookLoanService>();
 
-// ADDED: New Module Registrations 
+// ==========================================================
+// NEW MODULE REGISTRATIONS
+// ==========================================================
 builder.Services.AddScoped<IBookMasterRepository, BookMasterRepository>();
 builder.Services.AddScoped<IBookMasterService, BookMasterService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -52,7 +50,7 @@ builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
-// ---> ADDED RETURN & RETURN DETAIL REGISTRATIONS <---
+
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IReturnRepository, Library_Management_System.NewModule.Repositories.ReturnRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnService, Library_Management_System.NewModule.Services.ReturnService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IReturnDetailRepository, Library_Management_System.NewModule.Repositories.ReturnDetailRepository>();
@@ -61,29 +59,26 @@ builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnD
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IStudentRepository, Library_Management_System.NewModule.Repositories.StudentRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IStudentService, Library_Management_System.NewModule.Services.StudentService>();
 
-// ---> FIXED: ADDED ISSUE & ISSUE DETAIL REGISTRATIONS <---
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueRepository, Library_Management_System.NewModule.Repositories.IssueRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueService, Library_Management_System.NewModule.Services.IssueService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueDetailRepository, Library_Management_System.NewModule.Repositories.IssueDetailRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueDetailService, Library_Management_System.NewModule.Services.IssueDetailService>();
 
-
-// ---> ADDED FINE & FINE DETAIL REGISTRATIONS <---
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineMasterRepository, Library_Management_System.NewModule.Repositories.FineMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineMasterService, Library_Management_System.NewModule.Services.FineMasterService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineDetailMasterRepository, Library_Management_System.NewModule.Repositories.FineDetailMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineDetailMasterService, Library_Management_System.NewModule.Services.FineDetailMasterService>();
 
-// ---> ADDED PAYMENT & PAYMENT DETAIL REGISTRATIONS <---
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentMasterRepository, Library_Management_System.NewModule.Repositories.PaymentMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentMasterService, Library_Management_System.NewModule.Services.PaymentMasterService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IPaymentDetailMasterRepository, Library_Management_System.NewModule.Repositories.PaymentDetailMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IPaymentDetailMasterService, Library_Management_System.NewModule.Services.PaymentDetailMasterService>();
 
-// ---> ADDED BOOK SEARCH & AVAILABILITY REGISTRATION <---
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IBookSearchService, Library_Management_System.NewModule.Services.BookSearchService>();
 
-// 3. Configure JWT Authentication
+// ==========================================================
+// AUTHENTICATION & SWAGGER CONFIGURATION
+// ==========================================================
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -101,7 +96,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// 4. Configure Swagger to accept tokens
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -128,7 +122,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// 5. THESE COMMANDS ARE REQUIRED TO KEEP THE APP RUNNING
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -136,10 +129,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Authentication MUST come before Authorization
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.Run();
