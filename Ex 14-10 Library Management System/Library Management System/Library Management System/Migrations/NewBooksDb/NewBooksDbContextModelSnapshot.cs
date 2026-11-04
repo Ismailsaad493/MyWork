@@ -127,9 +127,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnType("bit")
                         .HasColumnName("is_active");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<int>("UpdateCount")
@@ -311,9 +310,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("amount");
 
-                    b.Property<string>("ChargeType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("ChargeType")
+                        .HasColumnType("int")
                         .HasColumnName("charge_type");
 
                     b.Property<DateTime>("CreatedAt")
@@ -384,9 +382,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnType("int")
                         .HasColumnName("issue_detail_id");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<int>("UpdateCount")
@@ -442,9 +439,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("issue_id");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<int>("UpdateCount")
@@ -497,9 +493,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("s_id");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
                         .HasColumnName("status");
 
                     b.Property<int>("UpdateCount")
@@ -600,9 +595,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnType("datetime2")
                         .HasColumnName("payment_date");
 
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int")
                         .HasColumnName("payment_method");
 
                     b.Property<string>("SId")
@@ -684,9 +678,8 @@ namespace Library_Management_System.Migrations.NewBooksDb
                         .HasColumnName("return_detail_id")
                         .HasDefaultValueSql("CONCAT('RD', NEXT VALUE FOR ReturnDetailSeq)");
 
-                    b.Property<string>("Condition")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<int>("Condition")
+                        .HasColumnType("int")
                         .HasColumnName("condition");
 
                     b.Property<DateTime>("CreatedAt")

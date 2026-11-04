@@ -10,7 +10,7 @@ namespace Library_Management_System.NewModule.Entities
         public string FineId { get; set; } = null!;
         public FineMaster Fine { get; set; } = null!;
 
-        public string ChargeType { get; set; } = null!; // "over due" or "damage"
+        public int ChargeType { get; set; } = 1; // "over due" or "damage"
         public decimal Amount { get; set; }
     }
 }

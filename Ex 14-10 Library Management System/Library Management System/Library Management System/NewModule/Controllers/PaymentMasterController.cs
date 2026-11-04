@@ -27,6 +27,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePayment([FromBody] PaymentCreateDto dto)
         {
+            if (dto.PaymentMethod < 1 || dto.PaymentMethod > 3)
+            {
+                return BadRequest(new { Message = "type only 1, 2, or 3" });
+            }
             try { return Ok(await _service.CreatePaymentAsync(dto)); }
             catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
         }
@@ -34,6 +38,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePayment(string id, [FromBody] PaymentUpdateDto dto)
         {
+            if (dto.PaymentMethod < 1 || dto.PaymentMethod > 3)
+            {
+                return BadRequest(new { Message = "type only 1, 2, or 3" });
+            }
             try
             {
                 var success = await _service.UpdatePaymentAsync(id, dto);

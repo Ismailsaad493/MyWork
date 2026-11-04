@@ -5,13 +5,13 @@ namespace Library_Management_System.NewModule.Dtos
     public class PaymentCreateDto
     {
         public string SId { get; set; } = null!;
-        public string PaymentMethod { get; set; } = null!;
+        public int PaymentMethod { get; set; } = 1;
     }
 
     public class PaymentUpdateDto
     {
         public string SId { get; set; } = null!;
-        public string PaymentMethod { get; set; } = null!;
+        public int PaymentMethod { get; set; } = 1;
     }
 
     public class PaymentDetailCreateDto

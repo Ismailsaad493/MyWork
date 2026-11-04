@@ -6,18 +6,29 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Controllers
 {
-    [Route("api/new-books-module/[controller]")]
     [ApiController]
+    [Route("api/new-books-module/issue-master")]
     public class IssueMasterController : ControllerBase
     {
-        private readonly IIssueService _service;
-        public IssueMasterController(IIssueService service) { _service = service; }
+        private readonly IIssueMasterService _service;
+
+        public IssueMasterController(IIssueMasterService service)
+        {
+            _service = service;
+        }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            try { return Ok(await _service.GetAllIssuesAsync()); }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+            try
+            {
+                return Ok(await _service.GetAllIssuesAsync(pageNumber, pageSize));
+            }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
         }
 
         [HttpPost]
@@ -26,10 +37,17 @@ namespace Library_Management_System.NewModule.Controllers
             try
             {
                 var result = await _service.CreateIssueAsync(dto);
-                if (result == null) return StatusCode(403, new { Message = "invalid id or id not found" });
+                if (result == null)
+                {
+                    return StatusCode(403, new { Message = "invalid student id or book copy not found" });
+                }
                 return Ok(result);
             }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
         }
 
         [HttpPut("{id}")]
@@ -38,10 +56,36 @@ namespace Library_Management_System.NewModule.Controllers
             try
             {
                 var success = await _service.UpdateIssueAsync(id, dto);
-                if (!success) return StatusCode(403, new { Message = "invalid id or id not found" });
-                return NoContent();
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid issue id or student id not found" });
+                }
+                return Ok(new { Message = "Issue updated successfully." });
             }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var success = await _service.DeleteIssueAsync(id);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid issue id not found" });
+                }
+                return Ok(new { Message = "Issue deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
         }
     }
 }

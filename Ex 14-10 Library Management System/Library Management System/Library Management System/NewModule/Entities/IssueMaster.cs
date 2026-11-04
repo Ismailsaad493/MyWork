@@ -11,8 +11,8 @@ namespace Library_Management_System.NewModule.Entities
         public string SId { get; set; } = null!; // From Student Table
 
         public DateOnly IssueDate { get; set; }
-        public string Status { get; set; } = null!; // "open" or "close"
+        public int Status { get; set; } = 1; // "open" or "close"
 
-        // Navigation property for 1-to-Many relationship
+        public ICollection<IssueDetailMaster> Details { get; set; } = new List<IssueDetailMaster>();
     }
 }

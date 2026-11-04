@@ -12,6 +12,7 @@ namespace Library_Management_System.NewModule.Repositories
         Task<IssueMaster?> GetByIdAsync(string id);
         Task<IssueMaster> AddAsync(IssueMaster issue);
         Task UpdateAsync(IssueMaster issue);
+        Task DeleteAsync(IssueMaster issue); // <-- 1. Added here
     }
 
     public class IssueRepository : IIssueRepository
@@ -43,6 +44,12 @@ namespace Library_Management_System.NewModule.Repositories
         public async Task UpdateAsync(IssueMaster issue)
         {
             _context.IssueMasters.Update(issue);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(IssueMaster issue) // <-- 2. Implemented here
+        {
+            _context.IssueMasters.Remove(issue);
             await _context.SaveChangesAsync();
         }
     }

@@ -12,7 +12,7 @@ namespace Library_Management_System.NewModule.Entities
         public StudentMaster Student { get; set; } = null!;
 
         public DateOnly PaymentDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
-        public string PaymentMethod { get; set; } = null!; // "cash", "upi", or "banking"
+        public int PaymentMethod { get; set; } = 1; // "cash", "upi", or "banking"
         public decimal TotalAmount { get; set; }
     }
 }

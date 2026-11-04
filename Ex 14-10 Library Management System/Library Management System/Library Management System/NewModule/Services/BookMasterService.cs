@@ -39,7 +39,7 @@ namespace Library_Management_System.NewModule.Services
             }).ToList();
         }
 
-        public async Task<BookMasterResponseDto> CreateBookAsync(BookMasterCreateDto dto)
+        public async Task<BookMasterResponseDto> CreateBookAsync(BookMasterResponseDto dto)
         {
             if (!string.IsNullOrEmpty(dto.Isbn) && await _repo.IsbnExistsAsync(dto.Isbn))
                 throw new InvalidOperationException("A book with this ISBN already exists.");

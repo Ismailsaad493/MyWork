@@ -15,6 +15,6 @@ namespace Library_Management_System.NewModule.Entities
         public int IssueDetailId { get; set; }
         public IssueDetailMaster IssueDetail { get; set; } = null!;
 
-        public string Condition { get; set; } = null!; // "good", "bad", or "ugly"
+        public int Condition { get; set; } =1; // "good", "bad", or "ugly"
     }
 }

@@ -27,6 +27,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateFine([FromBody] FineCreateDto dto)
         {
+            if (dto.Status != 1 && dto.Status != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try { return Ok(await _service.CreateFineAsync(dto)); }
             catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
         }
@@ -34,6 +38,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFine(string id, [FromBody] FineUpdateDto dto)
         {
+            if (dto.Status != 1 && dto.Status != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try
             {
                 var success = await _service.UpdateFineAsync(id, dto);

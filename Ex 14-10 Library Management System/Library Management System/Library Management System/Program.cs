@@ -13,12 +13,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// FIXED: Added IgnoreCycles to prevent 500 errors on relational GET requests
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-});
-
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
@@ -62,10 +57,12 @@ builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IRet
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IReturnDetailService, Library_Management_System.NewModule.Services.ReturnDetailService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IStudentRepository, Library_Management_System.NewModule.Repositories.StudentRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IStudentService, Library_Management_System.NewModule.Services.StudentService>();
+
+// Issue Master & Details Registration
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueRepository, Library_Management_System.NewModule.Repositories.IssueRepository>();
-builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueService, Library_Management_System.NewModule.Services.IssueService>();
-builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueDetailRepository, Library_Management_System.NewModule.Repositories.IssueDetailRepository>();
+builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueMasterService, Library_Management_System.NewModule.Services.IssueService>(); builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IIssueDetailRepository, Library_Management_System.NewModule.Repositories.IssueDetailRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IIssueDetailService, Library_Management_System.NewModule.Services.IssueDetailService>();
+
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineMasterRepository, Library_Management_System.NewModule.Repositories.FineMasterRepository>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Services.IFineMasterService, Library_Management_System.NewModule.Services.FineMasterService>();
 builder.Services.AddScoped<Library_Management_System.NewModule.Repositories.IFineDetailMasterRepository, Library_Management_System.NewModule.Repositories.FineDetailMasterRepository>();
@@ -132,10 +129,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

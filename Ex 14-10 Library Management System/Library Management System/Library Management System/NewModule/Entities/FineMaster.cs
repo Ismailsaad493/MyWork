@@ -13,6 +13,6 @@ namespace Library_Management_System.NewModule.Entities
 
         public DateOnly FineDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow); public decimal FineAmount { get; set; }
 
-        public string Status { get; set; } = null!; // "paid" or "unpaid"
+        public int Status { get; set; } =1; // "paid" or "unpaid"
     }
 }

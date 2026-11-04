@@ -124,7 +124,12 @@ namespace Library_Management_System.NewModule.Data
                 .HasDefaultValueSql("CONCAT('P', NEXT VALUE FOR PaymentSeq)")
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.SId).HasColumnName("s_id").IsRequired();
-            modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentDate).HasColumnName("payment_date").IsRequired();
+            modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentDate)
+                .HasColumnName("payment_date")
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentMethod).HasColumnName("payment_method").IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.TotalAmount)
                 .HasColumnName("total_amount")
@@ -169,7 +174,12 @@ namespace Library_Management_System.NewModule.Data
                 .HasDefaultValueSql("CONCAT('F', NEXT VALUE FOR FineSeq)")
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<FineMaster>().Property(f => f.IssueDetailId).HasColumnName("issue_detail_id").IsRequired();
-            modelBuilder.Entity<FineMaster>().Property(f => f.FineDate).HasColumnName("fine_date").IsRequired();
+            modelBuilder.Entity<FineMaster>().Property(f => f.FineDate)
+                .HasColumnName("fine_date")
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
             modelBuilder.Entity<FineMaster>().Property(f => f.Status).HasColumnName("status").IsRequired();
             modelBuilder.Entity<FineMaster>().Property(f => f.FineAmount)
                 .HasColumnName("fine_amount")
@@ -209,7 +219,12 @@ namespace Library_Management_System.NewModule.Data
                 .HasDefaultValueSql("CONCAT('R', NEXT VALUE FOR ReturnSeq)")
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<ReturnMaster>().Property(r => r.SId).HasColumnName("s_id").IsRequired();
-            modelBuilder.Entity<ReturnMaster>().Property(r => r.ReturnDate).HasColumnName("return_date").IsRequired();
+            modelBuilder.Entity<ReturnMaster>().Property(r => r.ReturnDate)
+                .HasColumnName("return_date")
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
             modelBuilder.Entity<ReturnMaster>()
                 .HasOne<StudentMaster>()
                 .WithMany()
@@ -246,7 +261,12 @@ namespace Library_Management_System.NewModule.Data
                 .HasDefaultValueSql("CONCAT('i', NEXT VALUE FOR IssueSeq)")
                 .ValueGeneratedOnAdd();
             modelBuilder.Entity<IssueMaster>().Property(i => i.SId).HasColumnName("s_id").IsRequired();
-            modelBuilder.Entity<IssueMaster>().Property(i => i.IssueDate).HasColumnName("issue_date").IsRequired();
+            modelBuilder.Entity<IssueMaster>().Property(i => i.IssueDate)
+                .HasColumnName("issue_date")
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
             modelBuilder.Entity<IssueMaster>().Property(i => i.Status).HasColumnName("status").IsRequired();
             modelBuilder.Entity<IssueMaster>()
                 .HasOne<StudentMaster>()
@@ -261,7 +281,12 @@ namespace Library_Management_System.NewModule.Data
                 .UseIdentityColumn(3001, 1);
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.IssueId).HasColumnName("issue_id").IsRequired();
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.BookCopyId).HasColumnName("book_copy_id").IsRequired();
-            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.DueDate).HasColumnName("due_date").IsRequired();
+            modelBuilder.Entity<IssueDetailMaster>().Property(id => id.DueDate)
+                .HasColumnName("due_date")
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.Status).HasColumnName("status").IsRequired();
             modelBuilder.Entity<IssueDetailMaster>()
                 .HasOne(id => id.Issue)

@@ -25,6 +25,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BookCopyCreateDto dto)
         {
+            if (dto.Status != 1 && dto.Status != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try
             {
                 var result = await _service.CreateBookCopyAsync(dto);
@@ -40,6 +44,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] BookCopyUpdateDto dto)
         {
+            if (dto.Status != 1 && dto.Status != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try
             {
                 var result = await _service.UpdateBookCopyAsync(id, dto);

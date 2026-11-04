@@ -33,6 +33,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ReturnDetailCreateDto dto)
         {
+            if (dto.Condition != 1 && dto.Condition != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try
             {
                 var result = await _service.CreateDetailAsync(dto);
@@ -48,6 +52,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] ReturnDetailUpdateDto dto)
         {
+            if (dto.Condition != 1 && dto.Condition != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try
             {
                 var success = await _service.UpdateDetailAsync(id, dto);

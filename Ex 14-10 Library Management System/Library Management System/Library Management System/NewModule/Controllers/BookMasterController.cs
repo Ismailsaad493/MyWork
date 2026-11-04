@@ -32,7 +32,7 @@ namespace Library_Management_System.NewModule.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] BookMasterCreateDto dto)
+        public async Task<IActionResult> Create([FromBody] BookMasterResponseDto dto)
         {
             try
             {

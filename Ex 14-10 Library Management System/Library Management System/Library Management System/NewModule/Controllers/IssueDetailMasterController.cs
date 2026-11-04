@@ -26,6 +26,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] IssueDetailCreateDto dto)
         {
+            if (dto.Status != 1 && dto.Status != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             var result = await _service.CreateDetailAsync(dto);
 
             var cleanResponse = new IssueDetailResponseDto
@@ -44,6 +48,10 @@ namespace Library_Management_System.NewModule.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] IssueDetailUpdateDto dto)
         {
+            if (dto.Status != 1 && dto.Status != 2)
+            {
+                return BadRequest(new { Message = "type only 1 or 2" });
+            }
             try
             {
                 var result = await _service.UpdateDetailAsync(id, dto);
