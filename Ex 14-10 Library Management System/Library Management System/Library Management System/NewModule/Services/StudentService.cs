@@ -1,16 +1,24 @@
-﻿using Library_Management_System.NewModule.Dtos;
+﻿using Library_Management_System.Entities;
+using Library_Management_System.NewModule.Dtos;
 using Library_Management_System.NewModule.Entities;
 using Library_Management_System.NewModule.Repositories;
+using StudentDto = Library_Management_System.NewModule.Dtos.StudentDto;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
     public interface IStudentService
     {
-        Task<IEnumerable<StudentMaster>> GetAllStudentsAsync();
+        // 1. Returns StudentDto to format the GET response cleanly
+        Task<IEnumerable<StudentDto>> GetAllStudentsAsync();
+
         Task<StudentMaster> CreateStudentAsync(StudentUpdateDto dto);
-        Task<bool> UpdateStudentAsync(string id, StudentUpdateDto dto);
+
+        // 2. Returns StudentMaster? instead of bool for proper PUT response bodies
+        Task<StudentMaster?> UpdateStudentAsync(string id, StudentUpdateDto dto);
+
         Task<bool> DeleteStudentAsync(string sId);
     }
 
@@ -19,7 +27,19 @@ namespace Library_Management_System.NewModule.Services
         private readonly IStudentRepository _repo;
         public StudentService(IStudentRepository repo) => _repo = repo;
 
-        public async Task<IEnumerable<StudentMaster>> GetAllStudentsAsync() => await _repo.GetAllAsync();
+        public async Task<IEnumerable<StudentDto>> GetAllStudentsAsync()
+        {
+            var students = await _repo.GetAllAsync();
+
+            // Maps the entity to the DTO, dropping audit fields and nested loops
+            return students.Select(s => new StudentDto
+            {
+                SId = s.SId,
+                SName = s.SName,
+                DId = s.DId,
+                DepartmentName = s.Department?.DName
+            }).ToList();
+        }
 
         public async Task<StudentMaster> CreateStudentAsync(StudentUpdateDto dto)
         {
@@ -31,16 +51,16 @@ namespace Library_Management_System.NewModule.Services
             return await _repo.AddAsync(student);
         }
 
-        public async Task<bool> UpdateStudentAsync(string id, StudentUpdateDto dto)
+        public async Task<StudentMaster?> UpdateStudentAsync(string id, StudentUpdateDto dto)
         {
             var existing = await _repo.GetByIdAsync(id);
-            if (existing == null) return false;
+            if (existing == null) return null; // Return null instead of false
 
             existing.SName = dto.SName;
             existing.DId = dto.DId;
 
             await _repo.UpdateAsync(existing);
-            return true;
+            return existing; // Returns the updated object
         }
 
         public async Task<bool> DeleteStudentAsync(string sId)

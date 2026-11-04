@@ -2,6 +2,7 @@
 using Library_Management_System.NewModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Repositories
@@ -15,19 +16,25 @@ namespace Library_Management_System.NewModule.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<BookMaster>> GetAllAsync()
+        public async Task<IEnumerable<BookMaster>> GetAllAsync(int pageNumber, int pageSize)
         {
             return await _context.Books
+                .IgnoreQueryFilters()
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
+                .Include(b => b.Copies) // Fetches the Detail records
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
 
         public async Task<BookMaster?> GetByIdAsync(int id)
         {
             return await _context.Books
+                .IgnoreQueryFilters()
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
+                .Include(b => b.Copies) // Fetches the Detail records
                 .FirstOrDefaultAsync(b => b.BookId == id);
         }
 
@@ -46,14 +53,21 @@ namespace Library_Management_System.NewModule.Repositories
             var normalizedIsbn = isbn.Trim().ToLower();
 
             return await _context.Books
+                .IgnoreQueryFilters()
                 .AnyAsync(b => b.Isbn != null && b.Isbn.ToLower() == normalizedIsbn);
         }
 
-        // NEW: For Update
         public async Task UpdateAsync(BookMaster book)
         {
             _context.Books.Update(book);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(BookMaster book)
+        {
+            await _context.Books
+                .Where(b => b.BookId == book.BookId)
+                .ExecuteDeleteAsync();
         }
     }
 }

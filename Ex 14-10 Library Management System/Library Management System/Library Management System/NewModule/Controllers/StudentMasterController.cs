@@ -1,13 +1,14 @@
 ﻿using Library_Management_System.NewModule.Dtos;
 using Library_Management_System.NewModule.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Controllers
 {
-    [ApiController] // <-- CRITICAL: Swagger needs this
-    [Route("api/new-books-module/student-master")] // <-- CRITICAL: Swagger needs this
-    public class StudentMasterController : ControllerBase // <-- CRITICAL: Must inherit from ControllerBase
+    [ApiController]
+    [Route("api/new-books-module/student-master")]
+    public class StudentMasterController : ControllerBase
     {
         private readonly IStudentService _service;
 
@@ -34,13 +35,17 @@ namespace Library_Management_System.NewModule.Controllers
         {
             try
             {
-                var success = await _service.UpdateStudentAsync(id, dto);
-                if (!success)
+                // Result is now a StudentMaster object, not a bool
+                var result = await _service.UpdateStudentAsync(id, dto);
+
+                // Explicitly check for null to fix the CS0023 Operator '!' error
+                if (result == null)
                 {
                     return StatusCode(403, new { Message = "invalid id or id not found" });
                 }
 
-                return NoContent(); // Or Ok(new { Message = "Updated successfully" }) depending on your preference
+                // Returns 200 OK with the full updated database record as the response body
+                return Ok(result);
             }
             catch (Exception)
             {

@@ -6,13 +6,10 @@ namespace Library_Management_System.NewModule.Services
 {
     public interface IBookMasterService
     {
-        Task<IEnumerable<BookMasterResponseDto>> GetAllBooksAsync();
-
-        // 2. For POST
+        Task<IEnumerable<BookMasterResponseDto>> GetAllBooksAsync(int pageNumber, int pageSize);
         Task<BookMasterResponseDto> CreateBookAsync(BookMasterCreateDto dto);
-
-        // 3. For PUT
         Task<bool> UpdateBookAsync(int id, BookMasterUpdateDto dto);
+        Task<bool> DeleteBookAsync(int id);
     }
 
 }

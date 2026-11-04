@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Library_Management_System.NewModule.Controllers
 {
     [ApiController]
-    [Route("api/new-books-module/book-copies")]
+    [Route("api/new-books-module/book-copy")]
     public class BookCopyController : ControllerBase
     {
         private readonly IBookCopyService _service;
@@ -18,34 +18,22 @@ namespace Library_Management_System.NewModule.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            try
-            {
-                var copies = await _service.GetAllCopiesAsync();
-                return Ok(copies);
-            }
-            catch (Exception)
-            {
-                return BadRequest(new { Message = "An error occurred while processing your request." });
-            }
+            return Ok(await _service.GetAllBookCopiesAsync(pageNumber, pageSize));
         }
-
         [HttpPost]
-        public async Task<IActionResult> Create(int bookId, [FromBody] BookCopyUpdateDto dto)
+        public async Task<IActionResult> Create([FromBody] BookCopyCreateDto dto)
         {
             try
             {
-                var result = await _service.CreateCopyAsync(bookId, dto.Status);
-                if (result == null)
-                {
-                    return StatusCode(403, new { Message = "invalid id or id not found" });
-                }
+                var result = await _service.CreateBookCopyAsync(dto);
                 return CreatedAtAction(nameof(GetAll), new { id = result.BookCopyId }, result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(new { Message = "An error occurred while processing your request." });
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = ex.Message });
             }
         }
 
@@ -54,13 +42,42 @@ namespace Library_Management_System.NewModule.Controllers
         {
             try
             {
-                var success = await _service.UpdateCopyAsync(id, dto);
+                var result = await _service.UpdateBookCopyAsync(id, dto);
+
+                if (result == null)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+
+                // Map the raw entity to your clean DTO
+                var cleanResponse = new BookCopyResponseDto
+                {
+                    BookCopyId = result.BookCopyId,
+                    BookId = result.BookId,
+                    BookTitle = "Title will populate on GET",
+                    Status = result.Status
+                };
+
+                return Ok(cleanResponse);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var success = await _service.DeleteBookCopyAsync(id);
                 if (!success)
                 {
                     return StatusCode(403, new { Message = "invalid id or id not found" });
                 }
 
-                return NoContent();
+                return Ok(new { Message = "Book copy deleted successfully." });
             }
             catch (Exception)
             {

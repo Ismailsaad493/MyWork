@@ -30,8 +30,8 @@ namespace Library_Management_System.NewModule.Services
                     BookId = b.BookId,
                     Title = b.Title,
                     TotalCopies = b.Copies!.Count(),
-                    AvailableCopies = b.Copies!.Count(c => c.Status.ToLower() == "available"),
-                    IssuedCopies = b.Copies!.Count(c => c.Status.ToLower() == "issued")
+                    AvailableCopies = b.Copies!.Count(c => c.Status == 1),
+                    IssuedCopies = b.Copies!.Count(c => c.Status == 2)
                 })
                 .ToListAsync();
         }
@@ -45,8 +45,8 @@ namespace Library_Management_System.NewModule.Services
                     BookId = b.BookId,
                     Title = b.Title,
                     TotalCopies = b.Copies!.Count(),
-                    AvailableCopies = b.Copies!.Count(c => c.Status.ToLower() == "available"),
-                    IssuedCopies = b.Copies!.Count(c => c.Status.ToLower() == "issued")
+                    AvailableCopies = b.Copies!.Count(c => c.Status == 1),
+                    IssuedCopies = b.Copies!.Count(c => c.Status == 2)
                 })
                 .ToListAsync();
         }

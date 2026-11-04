@@ -2,54 +2,77 @@
 using Library_Management_System.NewModule.Entities;
 using Library_Management_System.NewModule.Repositories;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
-    // The Interface
     public interface IBookCopyService
     {
-        Task<IEnumerable<BookCopy>> GetAllCopiesAsync();
-
-        // Note: Assuming you have a CreateDto with BookId. If not, use BookCopyUpdateDto and add BookId to it.
-        Task<BookCopy> CreateCopyAsync(int bookId, string status);
-        Task<bool> UpdateCopyAsync(int id, BookCopyUpdateDto dto);
+        Task<IEnumerable<BookCopyResponseDto>> GetAllBookCopiesAsync(int pageNumber, int pageSize);
+        Task<BookCopyResponseDto> CreateBookCopyAsync(BookCopyCreateDto dto);
+        Task<BookCopy?> UpdateBookCopyAsync(int id, BookCopyUpdateDto dto);
+        Task<bool> DeleteBookCopyAsync(int id);
     }
 
-    // The Implementation
     public class BookCopyService : IBookCopyService
     {
         private readonly IBookCopyRepository _repo;
+        public BookCopyService(IBookCopyRepository repo) => _repo = repo;
 
-        public BookCopyService(IBookCopyRepository repo)
+        public async Task<IEnumerable<BookCopyResponseDto>> GetAllBookCopiesAsync(int pageNumber, int pageSize)
         {
-            _repo = repo;
+            var copies = await _repo.GetAllAsync(pageNumber, pageSize);
+
+            return copies.Select(c => new BookCopyResponseDto
+            {
+                BookCopyId = c.BookCopyId,
+                BookId = c.BookId,
+                BookTitle = c.Book?.Title ?? string.Empty,
+                Status = c.Status
+            }).ToList();
         }
 
-        public async Task<IEnumerable<BookCopy>> GetAllCopiesAsync()
-        {
-            return await _repo.GetAllAsync();
-        }
-
-        public async Task<BookCopy> CreateCopyAsync(int bookId, string status)
+        public async Task<BookCopyResponseDto> CreateBookCopyAsync(BookCopyCreateDto dto)
         {
             var copy = new BookCopy
             {
-                BookId = bookId,
-                Status = status
+                BookId = dto.BookId,
+                Status = dto.Status
             };
 
-            return await _repo.AddAsync(copy);
+            var savedCopy = await _repo.AddAsync(copy);
+
+            // Fetch the record back out of the DB so Entity Framework joins the Book Title
+            var completeCopy = await _repo.GetByIdAsync(savedCopy.BookCopyId);
+
+            return new BookCopyResponseDto
+            {
+                BookCopyId = completeCopy!.BookCopyId,
+                BookId = completeCopy.BookId,
+                BookTitle = completeCopy.Book?.Title ?? "Unknown",
+                Status = completeCopy.Status
+            };
         }
 
-        public async Task<bool> UpdateCopyAsync(int id, BookCopyUpdateDto dto)
+        public async Task<BookCopy?> UpdateBookCopyAsync(int id, BookCopyUpdateDto dto)
         {
-            var existingCopy = await _repo.GetByIdAsync(id);
-            if (existingCopy == null) return false;
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return null;
 
-            existingCopy.Status = dto.Status;
+            // Updates only the status, matching your Update DTO
+            existing.Status = dto.Status;
 
-            await _repo.UpdateAsync(existingCopy);
+            await _repo.UpdateAsync(existing);
+            return existing;
+        }
+
+        public async Task<bool> DeleteBookCopyAsync(int id)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return false;
+
+            await _repo.DeleteAsync(existing);
             return true;
         }
     }

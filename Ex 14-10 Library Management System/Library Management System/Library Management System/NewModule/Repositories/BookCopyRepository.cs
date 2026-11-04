@@ -2,6 +2,7 @@
 using Library_Management_System.NewModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Repositories
@@ -11,12 +12,10 @@ namespace Library_Management_System.NewModule.Repositories
     // ==========================================
     public interface IBookCopyRepository
     {
-        Task<IEnumerable<BookCopy>> GetAllAsync();
-        Task<BookCopy> AddAsync(BookCopy copy);
-
-        // FIXED: Added these two methods to resolve the errors in your Service
+        Task<IEnumerable<BookCopy>> GetAllAsync(int pageNumber, int pageSize); Task<BookCopy> AddAsync(BookCopy copy);
         Task<BookCopy?> GetByIdAsync(int id);
         Task UpdateAsync(BookCopy copy);
+        Task DeleteAsync(BookCopy copy);
     }
 
     // ==========================================
@@ -25,15 +24,16 @@ namespace Library_Management_System.NewModule.Repositories
     public class BookCopyRepository : IBookCopyRepository
     {
         private readonly NewBooksDbContext _context;
+        public BookCopyRepository(NewBooksDbContext context) => _context = context;
 
-        public BookCopyRepository(NewBooksDbContext context)
+        public async Task<IEnumerable<BookCopy>> GetAllAsync(int pageNumber, int pageSize)
         {
-            _context = context;
-        }
-
-        public async Task<IEnumerable<BookCopy>> GetAllAsync()
-        {
-            return await _context.BookCopies.ToListAsync();
+            return await _context.BookCopies
+                                 .IgnoreQueryFilters()
+                                 .Include(bc => bc.Book)
+                                 .Skip((pageNumber - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToListAsync();
         }
 
         public async Task<BookCopy> AddAsync(BookCopy copy)
@@ -43,17 +43,25 @@ namespace Library_Management_System.NewModule.Repositories
             return copy;
         }
 
-        // FIXED: Implemented the fetch logic
         public async Task<BookCopy?> GetByIdAsync(int id)
         {
-            return await _context.BookCopies.FindAsync(id);
+            return await _context.BookCopies
+                                 .IgnoreQueryFilters()
+                                 .Include(bc => bc.Book) // Added this join to fetch the Book Master table
+                                 .FirstOrDefaultAsync(bc => bc.BookCopyId == id);
         }
 
-        // FIXED: Implemented the update logic
         public async Task UpdateAsync(BookCopy copy)
         {
             _context.BookCopies.Update(copy);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(BookCopy copy)
+        {
+            await _context.BookCopies
+                .Where(bc => bc.BookCopyId == copy.BookCopyId)
+                .ExecuteDeleteAsync();
         }
     }
 }

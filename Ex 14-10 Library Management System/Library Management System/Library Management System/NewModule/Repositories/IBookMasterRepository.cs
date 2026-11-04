@@ -6,10 +6,11 @@ namespace Library_Management_System.NewModule.Repositories
 {
     public interface IBookMasterRepository
     {
-        Task<IEnumerable<BookMaster>> GetAllAsync();
+        Task<IEnumerable<BookMaster>> GetAllAsync(int pageNumber, int pageSize);
         Task<BookMaster?> GetByIdAsync(int id);
         Task<BookMaster> AddAsync(BookMaster book);
         Task<bool> IsbnExistsAsync(string isbn);
         Task UpdateAsync(BookMaster book);
+        Task DeleteAsync(BookMaster book);
     }
 }

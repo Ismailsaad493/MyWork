@@ -6,30 +6,39 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Controllers
 {
-    [Route("api/new-books-module/[controller]")]
     [ApiController]
-    public class IssueDetailMasterController : ControllerBase
+    [Route("api/new-books-module/issue-detail")]
+    public class IssueDetailController : ControllerBase
     {
         private readonly IIssueDetailService _service;
-        public IssueDetailMasterController(IIssueDetailService service) { _service = service; }
+
+        public IssueDetailController(IIssueDetailService service)
+        {
+            _service = service;
+        }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            try { return Ok(await _service.GetAllDetailsAsync()); }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+            return Ok(await _service.GetAllDetailsAsync(pageNumber, pageSize));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] IssueDetailCreateDto dto)
         {
-            try
+            var result = await _service.CreateDetailAsync(dto);
+
+            var cleanResponse = new IssueDetailResponseDto
             {
-                var result = await _service.CreateDetailAsync(dto);
-                if (result == null) return StatusCode(403, new { Message = "invalid id or id not found" });
-                return Ok(result);
-            }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+                IssueDetailId = result.IssueDetailId,
+                IssueId = result.IssueId,
+                BookCopyId = result.BookCopyId,
+                BookTitle = "Will populate on GET",
+                DueDate = result.DueDate,
+                Status = result.Status
+            };
+
+            return CreatedAtAction(nameof(GetAll), new { id = result.IssueDetailId }, cleanResponse);
         }
 
         [HttpPut("{id}")]
@@ -37,12 +46,48 @@ namespace Library_Management_System.NewModule.Controllers
         {
             try
             {
-                var success = await _service.UpdateDetailAsync(id, dto);
-                if (!success) return StatusCode(403, new { Message = "invalid id or id not found" });
-                return NoContent();
+                var result = await _service.UpdateDetailAsync(id, dto);
+
+                if (result == null)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+
+                var cleanResponse = new IssueDetailResponseDto
+                {
+                    IssueDetailId = result.IssueDetailId,
+                    IssueId = result.IssueId,
+                    BookCopyId = result.BookCopyId,
+                    BookTitle = "Will populate on GET",
+                    DueDate = result.DueDate,
+                    Status = result.Status
+                };
+
+                return Ok(cleanResponse);
             }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var success = await _service.DeleteDetailAsync(id);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                }
+
+                return Ok(new { Message = "Issue detail deleted successfully." });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { Message = "An error occurred while processing your request." });
+            }
+        }
     }
 }
