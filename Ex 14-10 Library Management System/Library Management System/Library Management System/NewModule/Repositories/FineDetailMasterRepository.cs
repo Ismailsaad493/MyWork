@@ -32,7 +32,7 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<FineDetailMaster?> GetByIdAsync(string id)
         {
-            return await _context.FineDetails.FindAsync(id);
+            return await _context.FineDetails.FirstOrDefaultAsync(x => x.FineId == id);
         }
 
         public async Task<IEnumerable<FineDetailMaster>> GetByFineIdAsync(string fineId)

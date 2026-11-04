@@ -30,7 +30,8 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<FineMaster?> GetByIdAsync(string id)
         {
-            return await _context.FineMasters.FindAsync(id);
+            var data = await _context.FineMasters.FirstAsync(x => x.FineId == id);
+            return data;
         }
 
         public async Task<FineMaster> AddAsync(FineMaster fineMaster)

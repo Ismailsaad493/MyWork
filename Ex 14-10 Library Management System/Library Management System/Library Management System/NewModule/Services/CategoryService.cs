@@ -23,7 +23,6 @@ namespace Library_Management_System.NewModule.Services
             _repo = repo;
         }
 
-        // Pagination implemented here: exactly 10 items per page
         public async Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync(int pageNumber)
         {
             int pageSize = 10;

@@ -31,14 +31,14 @@ namespace Library_Management_System.NewModule.Services
 
         public async Task<FineDetailMaster?> CreateDetailAsync(FineDetailCreateDto dto)
         {
-            var fine = await _fineRepo.GetByIdAsync(dto.FineId);
-            if (fine == null) return null;
+            //var fine = await _fineRepo.GetByIdAsync(dto.FineId);
+            //if (fine == null) return null;
 
             var detail = new FineDetailMaster
             {
                 FineId = dto.FineId,
                 ChargeType = dto.ChargeType,
-                Amount = fine.FineAmount // Auto-populated
+                //Amount = fine.FineAmount // Auto-populated
             };
             return await _repo.AddAsync(detail);
         }

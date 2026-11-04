@@ -274,6 +274,13 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(i => i.SId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // FIX: Explicitly mapped IssueMaster to IssueDetailMaster relationship
+            modelBuilder.Entity<IssueMaster>()
+                .HasMany(i => i.Details)
+                .WithOne(id => id.Issue)
+                .HasForeignKey(id => id.IssueId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<IssueDetailMaster>().ToTable("issue-detail-master");
             modelBuilder.Entity<IssueDetailMaster>().HasKey(id => id.IssueDetailId);
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.IssueDetailId)
@@ -288,11 +295,7 @@ namespace Library_Management_System.NewModule.Data
                     v => DateOnly.FromDateTime(v))
                 .IsRequired();
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.Status).HasColumnName("status").IsRequired();
-            modelBuilder.Entity<IssueDetailMaster>()
-                .HasOne(id => id.Issue)
-                .WithMany()
-                .HasForeignKey(id => id.IssueId)
-                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<IssueDetailMaster>()
                 .HasOne(id => id.BookCopy)
                 .WithMany()

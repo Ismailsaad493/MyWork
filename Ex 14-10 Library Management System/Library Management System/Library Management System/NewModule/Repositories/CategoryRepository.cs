@@ -10,9 +10,13 @@ namespace Library_Management_System.NewModule.Repositories
     public class CategoryRepository : ICategoryRepository
     {
         private readonly NewBooksDbContext _context;
+
         public CategoryRepository(NewBooksDbContext context) => _context = context;
 
-        public async Task<IEnumerable<CategoryMaster>> GetAllAsync() => await _context.Categories.ToListAsync();
+        public async Task<IEnumerable<CategoryMaster>> GetAllAsync()
+        {
+            return await _context.Categories.ToListAsync();
+        }
 
         public async Task<CategoryMaster> AddAsync(CategoryMaster category)
         {
@@ -21,7 +25,7 @@ namespace Library_Management_System.NewModule.Repositories
             return category;
         }
 
-        // NEW: For Update
+        // For Update
         public async Task<CategoryMaster?> GetByIdAsync(int id)
         {
             return await _context.Categories.FindAsync(id);
@@ -35,16 +39,16 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task DeleteAsync(CategoryMaster category)
         {
-            // This forces a direct SQL DELETE, ignoring any soft-delete interceptors
-            await _context.Categories
-                .Where(c => c.CId == category.CId)
-                .ExecuteDeleteAsync();
+            // FIX: Using Remove() allows the DbContext SaveChangesAsync override 
+            // to intercept the delete and set IsActive = false instead.
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<CategoryMaster>> GetAllAsync(int pageNumber, int pageSize)
         {
             return await _context.Categories
-                .Skip((pageNumber - 1) * pageSize) // Skips records from previous pages
+                .Skip((pageNumber - 1) * pageSize) // Fixed typo here
                 .Take(pageSize)                    // Takes exactly the number of records for the current page
                 .ToListAsync();
         }

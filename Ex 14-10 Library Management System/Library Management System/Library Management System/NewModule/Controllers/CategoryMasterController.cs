@@ -11,6 +11,7 @@ namespace Library_Management_System.NewModule.Controllers
     public class CategoryMasterController : ControllerBase
     {
         private readonly ICategoryService _service;
+
         public CategoryMasterController(ICategoryService service) => _service = service;
 
         [HttpGet]
@@ -36,7 +37,7 @@ namespace Library_Management_System.NewModule.Controllers
                 var result = await _service.CreateCategoryAsync(dto);
                 if (result == null)
                 {
-                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                    return StatusCode(403, new { Message = "invalid data" });
                 }
                 return CreatedAtAction(nameof(GetAll), new { id = result.CId }, result);
             }
@@ -58,7 +59,6 @@ namespace Library_Management_System.NewModule.Controllers
                     return StatusCode(403, new { Message = "invalid id or id not found" });
                 }
 
-                // Returns a proper JSON response body with 200 OK
                 return Ok(new
                 {
                     Success = true,
