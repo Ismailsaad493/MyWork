@@ -21,7 +21,12 @@ namespace Library_Management_System.NewModule.Controllers
         public async Task<IActionResult> GetAllFines()
         {
             try { return Ok(await _service.GetAllFinesAsync()); }
-            catch (Exception) { return BadRequest(new { Message = "An error occurred while processing your request." }); }
+            catch (Exception ex)
+            {
+                // This will reveal the exact line or database issue that is breaking
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
         }
 
         [HttpPost]

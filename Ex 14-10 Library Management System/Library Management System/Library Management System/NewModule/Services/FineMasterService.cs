@@ -3,14 +3,16 @@ using Library_Management_System.NewModule.Entities;
 using Library_Management_System.NewModule.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq; // Required for mapping
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
     public interface IFineMasterService
     {
-        Task<IEnumerable<FineMaster>> GetAllFinesAsync();
-        Task<FineMaster> CreateFineAsync(FineCreateDto dto);
+        // Changed to return DTOs instead of raw Entities
+        Task<IEnumerable<FineResponseDto>> GetAllFinesAsync();
+        Task<FineResponseDto> CreateFineAsync(FineCreateDto dto);
         Task<bool> UpdateFineAsync(string id, FineUpdateDto dto);
     }
 
@@ -33,12 +35,22 @@ namespace Library_Management_System.NewModule.Services
             _paymentRepo = paymentRepo;
         }
 
-        public async Task<IEnumerable<FineMaster>> GetAllFinesAsync()
+        public async Task<IEnumerable<FineResponseDto>> GetAllFinesAsync()
         {
-            return await _repo.GetAllAsync();
+            var fines = await _repo.GetAllAsync();
+
+            // Map the raw database entities to safe Response DTOs
+            return fines.Select(f => new FineResponseDto
+            {
+                FineId = f.FineId.ToString(), // Safely handles the ID
+                IssueDetailId = f.IssueDetailId,
+                FineDate = f.FineDate,
+                FineAmount = f.FineAmount,
+                Status = f.Status
+            }).ToList();
         }
 
-        public async Task<FineMaster> CreateFineAsync(FineCreateDto dto)
+        public async Task<FineResponseDto> CreateFineAsync(FineCreateDto dto)
         {
             var fine = new FineMaster
             {
@@ -47,7 +59,18 @@ namespace Library_Management_System.NewModule.Services
                 Status = dto.Status,
                 FineDate = DateOnly.FromDateTime(DateTime.UtcNow)
             };
-            return await _repo.AddAsync(fine);
+
+            var savedFine = await _repo.AddAsync(fine);
+
+            // Return the mapped DTO
+            return new FineResponseDto
+            {
+                FineId = savedFine.FineId.ToString(),
+                IssueDetailId = savedFine.IssueDetailId,
+                FineDate = savedFine.FineDate,
+                FineAmount = savedFine.FineAmount,
+                Status = savedFine.Status
+            };
         }
 
         public async Task<bool> UpdateFineAsync(string id, FineUpdateDto dto)
