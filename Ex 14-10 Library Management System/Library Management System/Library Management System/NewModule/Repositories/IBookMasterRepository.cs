@@ -11,6 +11,11 @@ namespace Library_Management_System.NewModule.Repositories
         Task<BookMaster> AddAsync(BookMaster book);
         Task<bool> IsbnExistsAsync(string isbn);
         Task UpdateAsync(BookMaster book);
+
+        // Triggers IsActive = false via DbContext interceptor
         Task DeleteAsync(BookMaster book);
+
+        // Permanently deletes from the SQL database
+        Task<bool> HardDeleteAsync(int id);
     }
 }

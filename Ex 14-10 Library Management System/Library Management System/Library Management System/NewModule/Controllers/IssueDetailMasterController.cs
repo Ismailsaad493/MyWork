@@ -24,14 +24,13 @@ namespace Library_Management_System.NewModule.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] IssueDetailCreateDto dto)
+        public async Task<IActionResult> CreateDetail(string issueId, [FromBody] IssueDetailCreateDto dto)
         {
             if (dto.Status != 1 && dto.Status != 2)
             {
                 return BadRequest(new { Message = "type only 1 or 2" });
             }
-            var result = await _service.CreateDetailAsync(dto);
-
+            var result = await _service.CreateDetailAsync(issueId, dto);
             var cleanResponse = new IssueDetailResponseDto
             {
                 IssueDetailId = result.IssueDetailId,

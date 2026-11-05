@@ -9,11 +9,11 @@ namespace Library_Management_System.NewModule.Services
         Task<IEnumerable<BookMasterResponseDto>> GetAllBooksAsync(int pageNumber, int pageSize);
         Task<BookMasterResponseDto> CreateBookAsync(BookMasterResponseDto dto);
         Task<bool> UpdateBookAsync(int id, BookMasterUpdateDto dto);
+
+        // Soft delete (updates IsActive = false)
         Task<bool> DeleteBookAsync(int id);
+
+        // Hard delete (permanently removes from database)
+        Task<bool> HardDeleteBookAsync(int id);
     }
-
 }
-
-
-
-

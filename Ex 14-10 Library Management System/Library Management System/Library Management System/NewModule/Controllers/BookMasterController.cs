@@ -89,5 +89,25 @@ namespace Library_Management_System.NewModule.Controllers
                 return BadRequest(new { Message = "An error occurred while processing your request." });
             }
         }
+
+        [HttpDelete("hard-delete/{id}")]
+        public async Task<IActionResult> HardDelete(int id)
+        {
+            try
+            {
+                var success = await _service.HardDeleteBookAsync(id);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or book not found" });
+                }
+
+                return Ok(new { Message = "Book permanently deleted from the database." });
+            }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
+        }
     }
 }

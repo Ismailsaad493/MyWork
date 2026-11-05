@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
-    // The Interface
     public interface IPublisherService
     {
-        Task<IEnumerable<PublisherMaster>> GetAllPublishersAsync();
-        Task<PublisherMaster> CreatePublisherAsync(PublisherUpdateDto dto);
+        Task<IEnumerable<PublisherMaster>> GetAllPublishersAsync(int pageNumber);
+        Task<PublisherMaster> CreatePublisherAsync(PublisherCreateDto dto);
         Task<bool> UpdatePublisherAsync(int id, PublisherUpdateDto dto);
+        Task<bool> DeletePublisherAsync(int id);
+        Task<bool> HardDeletePublisherAsync(int id);
     }
 
     // The Implementation
@@ -24,12 +25,14 @@ namespace Library_Management_System.NewModule.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<PublisherMaster>> GetAllPublishersAsync()
+        public async Task<IEnumerable<PublisherMaster>> GetAllPublishersAsync(int pageNumber)
         {
-            return await _repo.GetAllAsync();
+            int pageSize = 10;
+            // FIX: Changed GetByIdAsync to GetAllAsync
+            return await _repo.GetAllAsync(pageNumber, pageSize);
         }
 
-        public async Task<PublisherMaster> CreatePublisherAsync(PublisherUpdateDto dto)
+        public async Task<PublisherMaster> CreatePublisherAsync(PublisherCreateDto dto)
         {
             var publisher = new PublisherMaster
             {
@@ -40,13 +43,26 @@ namespace Library_Management_System.NewModule.Services
 
         public async Task<bool> UpdatePublisherAsync(int id, PublisherUpdateDto dto)
         {
-            var existingPublisher = await _repo.GetByIdAsync(id);
-            if (existingPublisher == null) return false;
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return false;
 
-            existingPublisher.PName = dto.PName;
-
-            await _repo.UpdateAsync(existingPublisher);
+            existing.PName = dto.PName;
+            await _repo.UpdateAsync(existing);
             return true;
+        }
+
+        public async Task<bool> DeletePublisherAsync(int id)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return false;
+
+            await _repo.DeleteAsync(existing);
+            return true;
+        }
+
+        public async Task<bool> HardDeletePublisherAsync(int id)
+        {
+            return await _repo.HardDeleteAsync(id);
         }
     }
 }

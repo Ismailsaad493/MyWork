@@ -17,7 +17,7 @@ namespace Library_Management_System.NewModule.Controllers
             _service = service;
         }
 
-        [HttpGet]
+        [HttpGet("{Pagenumber-Pagesize}")]
         public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             return Ok(await _service.GetAllBookCopiesAsync(pageNumber, pageSize));

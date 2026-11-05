@@ -12,7 +12,7 @@ namespace Library_Management_System.NewModule.Controllers
         private readonly IDepartmentService _service;
         public DepartmentMasterController(IDepartmentService service) => _service = service;
 
-        [HttpGet]
+        [HttpGet("{Pagenumber-Pagesize}")]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllDepartmentsAsync());
 
         [HttpPost]

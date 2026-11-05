@@ -6,7 +6,6 @@ namespace Library_Management_System.NewModule.Dtos
     // --- Issue Detail DTOs ---
     public class IssueDetailCreateDto
     {
-        public string IssueId { get; set; } = string.Empty; // Added
         public int BookCopyId { get; set; }
         public DateOnly DueDate { get; set; }
         public int Status { get; set; } = 1;
@@ -14,7 +13,7 @@ namespace Library_Management_System.NewModule.Dtos
 
     public class IssueDetailUpdateDto
     {
-        public string IssueId { get; set; } = string.Empty; // Added
+        public string IssueId { get; set; } = string.Empty;
         public int BookCopyId { get; set; }
         public DateOnly DueDate { get; set; }
         public int Status { get; set; }
@@ -25,16 +24,17 @@ namespace Library_Management_System.NewModule.Dtos
         public int IssueDetailId { get; set; }
         public string IssueId { get; set; } = string.Empty;
         public int BookCopyId { get; set; }
-        public string BookTitle { get; set; } = string.Empty; // Added
+        public string BookTitle { get; set; } = string.Empty;
         public DateOnly DueDate { get; set; }
         public int Status { get; set; }
+        public string StatusName { get; set; } = string.Empty; // <-- NEW
     }
 
     // --- Issue Master DTOs ---
     public class IssueCreateDto
     {
         public string SId { get; set; } = string.Empty;
-        public DateTime IssueDate { get; set; } = DateTime.UtcNow;
+        public DateOnly IssueDate { get; set; } 
         public int Status { get; set; } = 1;
         public List<IssueDetailCreateDto> Details { get; set; } = new();
     }
@@ -42,7 +42,7 @@ namespace Library_Management_System.NewModule.Dtos
     public class IssueUpdateDto
     {
         public string SId { get; set; } = string.Empty;
-        public DateTime IssueDate { get; set; }
+        public DateOnly IssueDate { get; set; }
         public int Status { get; set; }
     }
 
@@ -50,8 +50,9 @@ namespace Library_Management_System.NewModule.Dtos
     {
         public string IssueId { get; set; } = string.Empty;
         public string SId { get; set; } = string.Empty;
-        public DateTime IssueDate { get; set; }
+        public DateOnly IssueDate { get; set; }
         public int Status { get; set; }
+        public string StatusName { get; set; } = string.Empty; // <-- NEW
         public List<IssueDetailResponseDto> Details { get; set; } = new();
     }
 }

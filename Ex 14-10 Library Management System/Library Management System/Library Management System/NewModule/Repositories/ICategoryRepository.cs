@@ -9,12 +9,11 @@ namespace Library_Management_System.NewModule.Repositories
     public interface ICategoryRepository
     {
         Task<IEnumerable<CategoryMaster>> GetAllAsync(int pageNumber, int pageSize);
-        Task<CategoryMaster> AddAsync(CategoryMaster category);
-
-        // NEW: For Update
         Task<CategoryMaster?> GetByIdAsync(int id);
+        Task<CategoryMaster> AddAsync(CategoryMaster category);
         Task UpdateAsync(CategoryMaster category);
-        Task DeleteAsync(CategoryMaster category); // Use your exact entity name if it's different
+        Task DeleteAsync(CategoryMaster category);
+        Task<bool> HardDeleteAsync(int id);
     }
 
 }

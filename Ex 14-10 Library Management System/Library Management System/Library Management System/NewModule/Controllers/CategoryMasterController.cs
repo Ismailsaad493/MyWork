@@ -12,9 +12,13 @@ namespace Library_Management_System.NewModule.Controllers
     {
         private readonly ICategoryService _service;
 
-        public CategoryMasterController(ICategoryService service) => _service = service;
+        public CategoryMasterController(ICategoryService service)
+        {
+            _service = service;
+        }
 
-        [HttpGet]
+        // --- GET WITH PAGINATION ---
+        [HttpGet("{Pagenumber-Pagesize}")]
         public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1)
         {
             try
@@ -56,7 +60,7 @@ namespace Library_Management_System.NewModule.Controllers
                 var success = await _service.UpdateCategoryAsync(id, dto);
                 if (!success)
                 {
-                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                    return StatusCode(403, new { Message = "invalid id or category not found" });
                 }
 
                 return Ok(new
@@ -80,9 +84,29 @@ namespace Library_Management_System.NewModule.Controllers
                 var success = await _service.DeleteCategoryAsync(id);
                 if (!success)
                 {
-                    return StatusCode(403, new { Message = "invalid id or id not found" });
+                    return StatusCode(403, new { Message = "invalid id or category not found" });
                 }
-                return Ok(new { Message = "Record deleted successfully." });
+                return Ok(new { Message = "Category deactivated successfully." });
+            }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
+        }
+
+        [HttpDelete("hard-delete/{id}")]
+        public async Task<IActionResult> HardDelete(int id)
+        {
+            try
+            {
+                var success = await _service.HardDeleteCategoryAsync(id);
+                if (!success)
+                {
+                    return StatusCode(403, new { Message = "invalid id or category not found" });
+                }
+
+                return Ok(new { Message = "Category permanently deleted from the database." });
             }
             catch (Exception ex)
             {

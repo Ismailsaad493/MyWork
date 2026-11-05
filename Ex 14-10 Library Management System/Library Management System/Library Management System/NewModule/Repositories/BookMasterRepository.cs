@@ -23,7 +23,7 @@ namespace Library_Management_System.NewModule.Repositories
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
                 .Include(b => b.Copies) // Fetches the Detail records
-                .Skip((pageNumber - 1) * pageSize)
+                .Skip((pageNumber - 1) * pageSize) // FIX: Corrected pagination syntax
                 .Take(pageSize)
                 .ToListAsync();
         }
@@ -63,11 +63,24 @@ namespace Library_Management_System.NewModule.Repositories
             await _context.SaveChangesAsync();
         }
 
+        // --- SOFT DELETE ---
         public async Task DeleteAsync(BookMaster book)
         {
-            await _context.Books
-                .Where(b => b.BookId == book.BookId)
+            // FIX: Using Remove() allows the DbContext SaveChangesAsync override 
+            // to intercept the delete and set IsActive = false instead.
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+        }
+
+        // --- HARD DELETE ---
+        public async Task<bool> HardDeleteAsync(int id)
+        {
+            // Bypasses the interceptor and permanently deletes the row
+            int deletedRows = await _context.Books
+                .Where(b => b.BookId == id)
                 .ExecuteDeleteAsync();
+
+            return deletedRows > 0;
         }
     }
 }

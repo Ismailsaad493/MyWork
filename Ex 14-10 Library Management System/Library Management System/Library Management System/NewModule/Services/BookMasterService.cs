@@ -8,8 +8,6 @@ using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Services
 {
-  
-
     public class BookMasterService : IBookMasterService
     {
         private readonly IBookMasterRepository _repo;
@@ -49,7 +47,13 @@ namespace Library_Management_System.NewModule.Services
                 Title = dto.Title,
                 Isbn = dto.Isbn,
                 CId = dto.CId,
-                PId = dto.PId
+                PId = dto.PId,
+                // FIX: Map the nested copies so Entity Framework saves them
+                Copies = dto.Copies?.Select(c => new BookCopy
+                {
+                    // BookCopyId is excluded here assuming the database auto-generates it
+                    Status = c.Status
+                }).ToList() ?? new List<BookCopy>()
             };
 
             var savedBook = await _repo.AddAsync(book);
@@ -103,6 +107,7 @@ namespace Library_Management_System.NewModule.Services
             return true;
         }
 
+        // --- SOFT DELETE ---
         public async Task<bool> DeleteBookAsync(int id)
         {
             var existing = await _repo.GetByIdAsync(id);
@@ -110,6 +115,12 @@ namespace Library_Management_System.NewModule.Services
 
             await _repo.DeleteAsync(existing);
             return true;
+        }
+
+        // --- HARD DELETE ---
+        public async Task<bool> HardDeleteBookAsync(int id)
+        {
+            return await _repo.HardDeleteAsync(id);
         }
     }
 }

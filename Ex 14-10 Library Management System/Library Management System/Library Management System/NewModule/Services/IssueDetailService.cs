@@ -10,7 +10,7 @@ namespace Library_Management_System.NewModule.Services
     public interface IIssueDetailService
     {
         Task<IEnumerable<IssueDetailResponseDto>> GetAllDetailsAsync(int pageNumber, int pageSize);
-        Task<IssueDetailMaster> CreateDetailAsync(IssueDetailCreateDto dto);
+        Task<IssueDetailMaster> CreateDetailAsync(string issueId, IssueDetailCreateDto dto);
         Task<IssueDetailMaster?> UpdateDetailAsync(int id, IssueDetailUpdateDto dto);
         Task<bool> DeleteDetailAsync(int id);
     }
@@ -35,15 +35,17 @@ namespace Library_Management_System.NewModule.Services
             }).ToList();
         }
 
-        public async Task<IssueDetailMaster> CreateDetailAsync(IssueDetailCreateDto dto)
+        // 1. Add "string issueId" as a parameter
+        public async Task<IssueDetailMaster> CreateDetailAsync(string issueId, IssueDetailCreateDto dto)
         {
             var detail = new IssueDetailMaster
             {
-                IssueId = dto.IssueId,
+                IssueId = issueId, // 2. Map it directly from the parameter
                 BookCopyId = dto.BookCopyId,
                 DueDate = dto.DueDate, // Maps DateOnly directly
                 Status = dto.Status
             };
+
             return await _repo.AddAsync(detail);
         }
 

@@ -11,11 +11,23 @@ namespace Library_Management_System.NewModule.Repositories
     {
         private readonly NewBooksDbContext _context;
 
-        public CategoryRepository(NewBooksDbContext context) => _context = context;
-
-        public async Task<IEnumerable<CategoryMaster>> GetAllAsync()
+        public CategoryRepository(NewBooksDbContext context)
         {
-            return await _context.Categories.ToListAsync();
+            _context = context;
+        }
+
+        // Added pagination logic
+        public async Task<IEnumerable<CategoryMaster>> GetAllAsync(int pageNumber, int pageSize)
+        {
+            return await _context.Categories
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<CategoryMaster?> GetByIdAsync(int id)
+        {
+            return await _context.Categories.FindAsync(id);
         }
 
         public async Task<CategoryMaster> AddAsync(CategoryMaster category)
@@ -23,12 +35,6 @@ namespace Library_Management_System.NewModule.Repositories
             await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
             return category;
-        }
-
-        // For Update
-        public async Task<CategoryMaster?> GetByIdAsync(int id)
-        {
-            return await _context.Categories.FindAsync(id);
         }
 
         public async Task UpdateAsync(CategoryMaster category)
@@ -39,18 +45,17 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task DeleteAsync(CategoryMaster category)
         {
-            // FIX: Using Remove() allows the DbContext SaveChangesAsync override 
-            // to intercept the delete and set IsActive = false instead.
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CategoryMaster>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<bool> HardDeleteAsync(int id)
         {
-            return await _context.Categories
-                .Skip((pageNumber - 1) * pageSize) // Fixed typo here
-                .Take(pageSize)                    // Takes exactly the number of records for the current page
-                .ToListAsync();
+            int deletedRows = await _context.Categories
+                .Where(c => c.CId == id) // Assuming CId is your primary key
+                .ExecuteDeleteAsync();
+
+            return deletedRows > 0;
         }
     }
 }
