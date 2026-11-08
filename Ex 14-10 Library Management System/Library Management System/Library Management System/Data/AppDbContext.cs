@@ -13,7 +13,6 @@ namespace Library_Management_System.Data
             _httpContextAccessor = httpContextAccessor;
         }
 
-        // All DbSets grouped together cleanly at the top
         public DbSet<User> Users { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Book> Books { get; set; }
@@ -21,10 +20,7 @@ namespace Library_Management_System.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Fine> Fines { get; set; }
         public DbSet<Role> Roles { get; set; }
-
-        // FIXED: A dded the missing Authors table
         public DbSet<Author> Authors { get; set; }
-
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -58,7 +54,12 @@ namespace Library_Management_System.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // FIXED: Only ONE mapping per relationship. 
+            // ========================================================
+            // LEGACY SCHEMA MAPPING FOR SQL SCRIPTS
+            // ========================================================
+            modelBuilder.Entity<Student>().ToTable("Borrowers"); // Forces EF to use Borrowers table
+            modelBuilder.Entity<BookLoan>().ToTable("BookLoans"); // Forces EF to use BookLoans table
+            modelBuilder.Entity<Book>().ToTable("Books"); // Keeps Books consistent
 
             // 1. Author -> Books
             modelBuilder.Entity<Book>()

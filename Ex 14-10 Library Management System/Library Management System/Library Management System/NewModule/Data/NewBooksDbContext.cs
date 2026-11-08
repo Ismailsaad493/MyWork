@@ -44,11 +44,8 @@ namespace Library_Management_System.NewModule.Data
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedBy = username;
-
-                    // FIXED: Explicitly force Update fields to null for ALL new records
                     entry.Entity.UpdatedBy = null;
                     entry.Entity.UpdatedAt = null;
-
                     entry.Entity.CreatedAt = DateTime.UtcNow;
                     entry.Entity.UpdateCount = 0;
                     entry.Entity.IsActive = true;
@@ -57,7 +54,6 @@ namespace Library_Management_System.NewModule.Data
                 {
                     entry.Property(e => e.CreatedBy).IsModified = false;
                     entry.Property(e => e.CreatedAt).IsModified = false;
-
                     entry.Entity.UpdatedBy = username;
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
                     entry.Entity.UpdateCount++;
@@ -67,7 +63,6 @@ namespace Library_Management_System.NewModule.Data
                     entry.State = EntityState.Modified;
                     entry.Property(e => e.CreatedBy).IsModified = false;
                     entry.Property(e => e.CreatedAt).IsModified = false;
-
                     entry.Entity.UpdatedBy = username;
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
                     entry.Entity.UpdateCount++;
@@ -93,9 +88,7 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.HasSequence<int>("PaymentDetailSeq").StartsAt(1).IncrementsBy(1);
             modelBuilder.HasSequence<int>("BookAvailabilitySeq").StartsAt(1).IncrementsBy(1);
 
-            // ========================================================
             // BOOK AVAILABILITY MAPPING
-            // ========================================================
             modelBuilder.Entity<BookAvailabilityMaster>().ToTable("book-availability-master");
             modelBuilder.Entity<BookAvailabilityMaster>().HasKey(ba => ba.AvailabilityId);
             modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.AvailabilityId)
@@ -107,16 +100,13 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.TotalCopies).HasColumnName("total_copies").IsRequired();
             modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.AvailableCopies).HasColumnName("available_copies").IsRequired();
             modelBuilder.Entity<BookAvailabilityMaster>().Property(ba => ba.IssuedCopies).HasColumnName("issued_copies").IsRequired();
-
             modelBuilder.Entity<BookAvailabilityMaster>()
                 .HasOne(ba => ba.Book)
                 .WithMany()
                 .HasForeignKey(ba => ba.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ========================================================
             // PAYMENT MANAGEMENT MAPPINGS
-            // ========================================================
             modelBuilder.Entity<PaymentMaster>().ToTable("payment-master");
             modelBuilder.Entity<PaymentMaster>().HasKey(p => p.PaymentId);
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentId)
@@ -126,9 +116,7 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<PaymentMaster>().Property(p => p.SId).HasColumnName("s_id").IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentDate)
                 .HasColumnName("payment_date")
-                .HasConversion(
-                    v => v.ToDateTime(TimeOnly.MinValue),
-                    v => DateOnly.FromDateTime(v))
+                .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v))
                 .IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.PaymentMethod).HasColumnName("payment_method").IsRequired();
             modelBuilder.Entity<PaymentMaster>().Property(p => p.TotalAmount)
@@ -164,9 +152,7 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(pd => pd.FineId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ========================================================
             // FINE MANAGEMENT MAPPINGS
-            // ========================================================
             modelBuilder.Entity<FineMaster>().ToTable("fine-master");
             modelBuilder.Entity<FineMaster>().HasKey(f => f.FineId);
             modelBuilder.Entity<FineMaster>().Property(f => f.FineId)
@@ -176,9 +162,7 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<FineMaster>().Property(f => f.IssueDetailId).HasColumnName("issue_detail_id").IsRequired();
             modelBuilder.Entity<FineMaster>().Property(f => f.FineDate)
                 .HasColumnName("fine_date")
-                .HasConversion(
-                    v => v.ToDateTime(TimeOnly.MinValue),
-                    v => DateOnly.FromDateTime(v))
+                .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v))
                 .IsRequired();
             modelBuilder.Entity<FineMaster>().Property(f => f.Status).HasColumnName("status").IsRequired();
             modelBuilder.Entity<FineMaster>().Property(f => f.FineAmount)
@@ -209,9 +193,7 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(fd => fd.FineId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ========================================================
             // RETURN MANAGEMENT MAPPINGS
-            // ========================================================
             modelBuilder.Entity<ReturnMaster>().ToTable("return-master");
             modelBuilder.Entity<ReturnMaster>().HasKey(r => r.RId);
             modelBuilder.Entity<ReturnMaster>().Property(r => r.RId)
@@ -221,9 +203,7 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<ReturnMaster>().Property(r => r.SId).HasColumnName("s_id").IsRequired();
             modelBuilder.Entity<ReturnMaster>().Property(r => r.ReturnDate)
                 .HasColumnName("return_date")
-                .HasConversion(
-                    v => v.ToDateTime(TimeOnly.MinValue),
-                    v => DateOnly.FromDateTime(v))
+                .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v))
                 .IsRequired();
             modelBuilder.Entity<ReturnMaster>()
                 .HasOne<StudentMaster>()
@@ -251,9 +231,7 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(rd => rd.IssueDetailId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ========================================================
             // ISSUE MANAGEMENT MAPPINGS
-            // ========================================================
             modelBuilder.Entity<IssueMaster>().ToTable("issue-master");
             modelBuilder.Entity<IssueMaster>().HasKey(i => i.IssueId);
             modelBuilder.Entity<IssueMaster>().Property(i => i.IssueId)
@@ -263,9 +241,7 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<IssueMaster>().Property(i => i.SId).HasColumnName("s_id").IsRequired();
             modelBuilder.Entity<IssueMaster>().Property(i => i.IssueDate)
                 .HasColumnName("issue_date")
-                .HasConversion(
-                    v => v.ToDateTime(TimeOnly.MinValue),
-                    v => DateOnly.FromDateTime(v))
+                .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v))
                 .IsRequired();
             modelBuilder.Entity<IssueMaster>().Property(i => i.Status).HasColumnName("status").IsRequired();
             modelBuilder.Entity<IssueMaster>()
@@ -274,7 +250,6 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(i => i.SId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // FIX: Explicitly mapped IssueMaster to IssueDetailMaster relationship
             modelBuilder.Entity<IssueMaster>()
                 .HasMany(i => i.Details)
                 .WithOne(id => id.Issue)
@@ -290,21 +265,16 @@ namespace Library_Management_System.NewModule.Data
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.BookCopyId).HasColumnName("book_copy_id").IsRequired();
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.DueDate)
                 .HasColumnName("due_date")
-                .HasConversion(
-                    v => v.ToDateTime(TimeOnly.MinValue),
-                    v => DateOnly.FromDateTime(v))
+                .HasConversion(v => v.ToDateTime(TimeOnly.MinValue), v => DateOnly.FromDateTime(v))
                 .IsRequired();
             modelBuilder.Entity<IssueDetailMaster>().Property(id => id.Status).HasColumnName("status").IsRequired();
-
             modelBuilder.Entity<IssueDetailMaster>()
                 .HasOne(id => id.BookCopy)
                 .WithMany()
                 .HasForeignKey(id => id.BookCopyId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ========================================================
             // STUDENT MANAGEMENT MAPPINGS
-            // ========================================================
             modelBuilder.Entity<DepartmentMaster>().ToTable("department-master");
             modelBuilder.Entity<DepartmentMaster>().HasKey(d => d.DId);
             modelBuilder.Entity<DepartmentMaster>().Property(d => d.DId)
@@ -327,9 +297,7 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(s => s.DId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ========================================================
             // BOOK MANAGEMENT MAPPINGS
-            // ========================================================
             modelBuilder.Entity<CategoryMaster>().ToTable("categories-master");
             modelBuilder.Entity<CategoryMaster>().HasKey(c => c.CId);
             modelBuilder.Entity<CategoryMaster>().Property(c => c.CId).HasColumnName("c_id").UseIdentityColumn(1, 1);
@@ -373,9 +341,7 @@ namespace Library_Management_System.NewModule.Data
                 .HasForeignKey(bc => bc.BookId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ========================================================
             // GLOBAL AUDITING COLUMN MAPPING
-            // ========================================================
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 if (typeof(IAuditable).IsAssignableFrom(entityType.ClrType))
@@ -390,14 +356,8 @@ namespace Library_Management_System.NewModule.Data
                     var parameter = System.Linq.Expressions.Expression.Parameter(entityType.ClrType, "e");
                     var propertyMethodInfo = typeof(Microsoft.EntityFrameworkCore.EF).GetMethod("Property")!.MakeGenericMethod(typeof(bool));
                     var isDeletedProperty = System.Linq.Expressions.Expression.Call(propertyMethodInfo, parameter, System.Linq.Expressions.Expression.Constant("IsActive"));
-
-                    var compareExpression = System.Linq.Expressions.Expression.MakeBinary(
-                        System.Linq.Expressions.ExpressionType.Equal,
-                        isDeletedProperty,
-                        System.Linq.Expressions.Expression.Constant(true));
-
+                    var compareExpression = System.Linq.Expressions.Expression.MakeBinary(System.Linq.Expressions.ExpressionType.Equal, isDeletedProperty, System.Linq.Expressions.Expression.Constant(true));
                     var lambda = System.Linq.Expressions.Expression.Lambda(compareExpression, parameter);
-
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
                 }
             }
