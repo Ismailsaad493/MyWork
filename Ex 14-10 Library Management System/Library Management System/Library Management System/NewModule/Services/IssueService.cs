@@ -45,8 +45,9 @@ namespace Library_Management_System.NewModule.Services
             var issue = new IssueMaster
             {
                 SId = dto.SId,
-                IssueDate = dto.IssueDate,
-                Status = dto.Status,
+                IssueDate = DateOnly.FromDateTime(dto.IssueDate),
+
+                // FIXED: Changed to IssueDetail (singular)
                 Details = dto.Details.Select(d => new IssueDetailMaster
                 {
                     BookCopyId = d.BookCopyId,

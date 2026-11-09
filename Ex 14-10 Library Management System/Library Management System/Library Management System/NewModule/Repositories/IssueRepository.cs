@@ -2,7 +2,7 @@
 using Library_Management_System.NewModule.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq; // Required for filtering and numbering
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Repositories
@@ -27,7 +27,6 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<IEnumerable<IssueMaster>> GetAllAsync()
         {
-            // Include details so the child list is fetched from SQL
             return await _context.IssueMasters
                 .Include(i => i.Details)
                 .ToListAsync();
@@ -35,7 +34,6 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<IssueMaster?> GetByIdAsync(string id)
         {
-            // Include details here as well
             return await _context.IssueMasters
                 .Include(i => i.Details)
                 .FirstOrDefaultAsync(i => i.IssueId == id);
@@ -43,27 +41,26 @@ namespace Library_Management_System.NewModule.Repositories
 
         public async Task<IssueMaster> AddAsync(IssueMaster issue)
         {
-            // 1. Fetch all existing IssueIds for this specific Student (SId)
+            // FIXED: Removed the SId filter. We now fetch all IssueIds in the table
+            // to ensure we generate a truly unique primary key.
             var existingIds = await _context.IssueMasters
-                .Where(i => i.SId == issue.SId)
                 .Select(i => i.IssueId)
                 .ToListAsync();
 
-            // 2. Calculate the next sequence number (i1, i2, etc.)
             int nextNumber = 1;
             if (existingIds.Any())
             {
                 nextNumber = existingIds
                     .Select(id =>
                     {
-                        if (id.StartsWith("i") && int.TryParse(id.Substring(1), out int num))
+                        if (!string.IsNullOrEmpty(id) && id.StartsWith("i") && int.TryParse(id.Substring(1), out int num))
                             return num;
                         return 0;
                     })
                     .Max() + 1;
             }
 
-            // 3. Assign the generated IssueId automatically
+            // Assign the generated IssueId automatically
             issue.IssueId = $"i{nextNumber}";
 
             await _context.IssueMasters.AddAsync(issue);

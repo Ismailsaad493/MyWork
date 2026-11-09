@@ -8,7 +8,6 @@ namespace Library_Management_System.NewModule.Services
 {
     public interface ICategoryService
     {
-        // Added pageNumber
         Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync(int pageNumber);
         Task<CategoryMaster> CreateCategoryAsync(CategoryCreateDto dto);
         Task<bool> UpdateCategoryAsync(int id, CategoryUpdateDto dto);
@@ -25,7 +24,6 @@ namespace Library_Management_System.NewModule.Services
             _repo = repo;
         }
 
-        // Added pageNumber and pageSize
         public async Task<IEnumerable<CategoryMaster>> GetAllCategoriesAsync(int pageNumber)
         {
             int pageSize = 10;
@@ -36,7 +34,7 @@ namespace Library_Management_System.NewModule.Services
         {
             var category = new CategoryMaster
             {
-                CName = dto.CName // Assuming CName is the property
+                CName = dto.CName
             };
             return await _repo.AddAsync(category);
         }

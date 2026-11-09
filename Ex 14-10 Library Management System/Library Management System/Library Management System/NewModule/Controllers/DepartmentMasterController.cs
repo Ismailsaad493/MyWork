@@ -1,6 +1,7 @@
 ﻿using Library_Management_System.NewModule.Dtos;
 using Library_Management_System.NewModule.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Library_Management_System.NewModule.Controllers
@@ -16,11 +17,26 @@ namespace Library_Management_System.NewModule.Controllers
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAllDepartmentsAsync());
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] DepartmentUpdateDto dto)
+        public async Task<IActionResult> Create([FromBody] DepartmentCreateDto dto)
         {
-            var result = await _service.CreateDepartmentAsync(dto);
-            return CreatedAtAction(nameof(GetAll), new { id = result.DId }, result);
+            try
+            {
+                var result = await _service.CreateDepartmentAsync(dto);
+                if (result == null)
+                {
+                    return BadRequest(new { Message = "Bad Request: Invalid data provided." });
+                }
+
+                // FIXED: Return 200 OK instead of crashing on the missing route
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new { Message = actualError });
+            }
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] DepartmentUpdateDto dto)
         {

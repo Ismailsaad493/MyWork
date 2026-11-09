@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Library_Management_System.NewModule.Dtos
 {
@@ -33,12 +34,21 @@ namespace Library_Management_System.NewModule.Dtos
     // --- Issue Master DTOs ---
     public class IssueCreateDto
     {
-        public string SId { get; set; } = string.Empty;
-        public DateOnly IssueDate { get; set; } 
-        public int Status { get; set; } = 1;
+        public int BookId { get; set; }
+
+        [JsonPropertyName("SId")]
+        public string SId { get; set; } = string.Empty; // Adding "= string.Empty;" fixes the CS8618 yellow warning
+
+        [JsonPropertyName("issueDate")]
+        public DateTime IssueDate { get; set; }
+
+        // --- ADD THESE TO FIX THE RED ERRORS ---
+        [JsonPropertyName("status")]
+        public int Status { get; set; }
+
+        [JsonPropertyName("details")]
         public List<IssueDetailCreateDto> Details { get; set; } = new();
     }
-
     public class IssueUpdateDto
     {
         public string SId { get; set; } = string.Empty;

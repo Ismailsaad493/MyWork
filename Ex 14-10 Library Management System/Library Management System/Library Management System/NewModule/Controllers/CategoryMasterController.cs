@@ -39,14 +39,19 @@ namespace Library_Management_System.NewModule.Controllers
             try
             {
                 var result = await _service.CreateCategoryAsync(dto);
+
+                // Returns 400 Bad Request if the service rejects the data
                 if (result == null)
                 {
-                    return StatusCode(403, new { Message = "invalid data" });
+                    return BadRequest(new { Message = "Bad Request: Invalid data provided." });
                 }
-                return CreatedAtAction(nameof(GetAll), new { id = result.CId }, result);
+
+                // FIXED 500 ERROR: Returns 200 OK instead of crashing on CreatedAtAction
+                return Ok(result);
             }
             catch (Exception ex)
             {
+                // Returns 400 Bad Request if the application throws an exception
                 var actualError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return BadRequest(new { Message = actualError });
             }

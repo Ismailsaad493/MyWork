@@ -9,7 +9,7 @@ namespace Library_Management_System.NewModule.Services
     public interface IDepartmentService
     {
         Task<IEnumerable<DepartmentMaster>> GetAllDepartmentsAsync();
-        Task<DepartmentMaster> CreateDepartmentAsync(DepartmentUpdateDto dto);
+        Task<DepartmentMaster> CreateDepartmentAsync(DepartmentCreateDto dto);
         Task<DepartmentMaster?> UpdateDepartmentAsync(string id, DepartmentUpdateDto dto);
     }
 
@@ -20,11 +20,12 @@ namespace Library_Management_System.NewModule.Services
 
         public async Task<IEnumerable<DepartmentMaster>> GetAllDepartmentsAsync() => await _repo.GetAllAsync();
 
-        public async Task<DepartmentMaster> CreateDepartmentAsync(DepartmentUpdateDto dto)
+        public async Task<DepartmentMaster> CreateDepartmentAsync(DepartmentCreateDto dto)
         {
             var dept = new DepartmentMaster { DName = dto.DName };
             return await _repo.AddAsync(dept);
         }
+
         public async Task<DepartmentMaster?> UpdateDepartmentAsync(string id, DepartmentUpdateDto dto)
         {
             var existingDepartment = await _repo.GetByIdAsync(id);

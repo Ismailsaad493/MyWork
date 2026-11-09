@@ -6,16 +6,17 @@ namespace Library_Management_System.NewModule.Dtos
     // --- Category DTOs ---
     public class CategoryCreateDto
     {
-        [JsonPropertyName("C_name")]
+        // FIXED: Changed to "cName" to match Postman exactly
+        [JsonPropertyName("cName")]
         public string CName { get; set; } = string.Empty;
     }
 
     public class CategoryResponseDto
     {
-        [JsonPropertyName("C_id")]
+        [JsonPropertyName("cId")]
         public int CId { get; set; }
 
-        [JsonPropertyName("C_name")]
+        [JsonPropertyName("cName")]
         public string CName { get; set; } = string.Empty;
 
         public bool IsActive { get; set; }
@@ -36,13 +37,23 @@ namespace Library_Management_System.NewModule.Dtos
     }
 
     // --- Master DTOs ---
-    // --- Master DTOs ---
     public class BookMasterCreateDto
     {
+        [JsonPropertyName("title")]
         public string Title { get; set; } = string.Empty;
+
+        [JsonPropertyName("isbn")]
         public string? Isbn { get; set; }
+
+        [JsonPropertyName("cId")]
         public int CId { get; set; }
+
+        [JsonPropertyName("pId")]
         public int PId { get; set; }
+
+        // NEW: This allows Postman to accept a list of copies
+        [JsonPropertyName("copies")]
+        public List<BookCopyCreateDto> Copies { get; set; } = new();
     }
 
     public class BookMasterUpdateDto
@@ -58,7 +69,6 @@ namespace Library_Management_System.NewModule.Dtos
         public int BookId { get; set; }
         public string Title { get; set; } = string.Empty;
 
-        // Replaced CategoryName and PublisherName with IDs to match your format
         public int CId { get; set; }
         public int PId { get; set; }
 
@@ -71,19 +81,22 @@ namespace Library_Management_System.NewModule.Dtos
     public class BookCopyDetailDto
     {
         public int BookCopyId { get; set; }
-        public int BookId { get; set; } // Added to match your requested format
+        public int BookId { get; set; }
         public int Status { get; set; }
     }
 
     public class BookCopyCreateDto
     {
+        [JsonPropertyName("bookId")]
         public int BookId { get; set; }
+
+        [JsonPropertyName("status")]
         public int Status { get; set; } = 1;
     }
 
     public class BookCopyUpdateDto
     {
-        public int Status { get; set; } 
+        public int Status { get; set; }
     }
 
     public class BookCopyResponseDto
@@ -91,6 +104,6 @@ namespace Library_Management_System.NewModule.Dtos
         public int BookCopyId { get; set; }
         public int BookId { get; set; }
         public string BookTitle { get; set; } = string.Empty;
-        public int Status { get; set; } 
+        public int Status { get; set; }
     }
 }
